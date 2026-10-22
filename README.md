@@ -61,7 +61,7 @@ pip install dvc pandas openpyxl jupyter ipykernel
 python -m ipykernel install --user --name ds-project-dvc --display-name "Python (ds-project-dvc)"
 ```
 
-El último comando registra el entorno como kernel de Jupyter, para que los notebooks usen las librerías instaladas. Si usas un remote en S3, instala `pip install "dvc[s3]"`.
+El último comando registra el entorno como kernel de Jupyter, para que los notebooks usen las librerías instaladas. Si usas un remote en S3, instala `pip install "dvc[s3]"`. Con la carpeta de Google Drive sincronizada basta con `dvc`.
 
 ### 2.3 Acceder a la carpeta compartida de Google Drive
 
