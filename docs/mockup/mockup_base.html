@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta simple - Alerta de gravedad de siniestros</title>
+<style>
+:root{--bg:#F2F5F8;--panel:#fff;--line:#DDE3EA;--ink:#27323F;--muted:#677484;
+--b1:#E6F0F8;--b2:#C3DCEF;--b3:#8FBBDE;--b4:#5A93C2;--b5:#3A6B97;--b6:#27496B;
+--g1:#EEF1F4;--g2:#D5DBE2;--g3:#A9B3BF;--g5:#4D5967}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.4}
+header{background:var(--g5);color:#fff;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{width:34px;height:34px;border-radius:8px;background:var(--b3);display:grid;place-items:center;color:var(--b6);font-weight:700}
+header h1{font-size:17px;font-weight:600}header small{display:block;color:var(--g2);font-size:12px;font-weight:400}
+.sp{flex:1}
+.toggle{display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;background:rgba(255,255,255,.12);padding:6px 12px;border-radius:20px}
+.toggle input{accent-color:var(--b3)}
+.flag{background:var(--b1);color:var(--b6);font-size:11px;padding:6px 28px;border-bottom:1px solid var(--b2);text-align:center}
+main{padding:20px 28px 32px;max-width:1280px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;position:relative}
+.card h2{font-size:14px;font-weight:600;margin-bottom:2px}.sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.col{display:flex;flex-direction:column;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:960px){.layout,.two{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600}
+select{padding:8px 10px;border:1px solid var(--g2);border-radius:7px;background:#fff;color:var(--ink);font-family:inherit;font-size:13px}
+input[type=range]{accent-color:var(--b4)}
+.btn{width:100%;background:var(--b5);color:#fff;border:none;padding:10px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.prob{margin:8px 0}.prob .t{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}.prob .t b{font-size:15px;color:var(--b6)}
+.prob .bar{height:13px;background:var(--g1);border-radius:7px;overflow:hidden}.prob .bar i{display:block;height:100%;border-radius:7px;transition:width .4s}
+.alertbox{border-radius:10px;padding:14px 18px;display:flex;gap:16px;align-items:center}
+.alertbox .big{font-size:26px;font-weight:700}
+.alertbox.b{background:var(--g1);color:var(--g5);border:1px solid var(--g2)}.alertbox.m{background:var(--b2);color:var(--b6)}.alertbox.a{background:var(--b6);color:#fff}
+.rec{margin-top:10px;padding:11px 14px;background:var(--b1);border-left:4px solid var(--b4);border-radius:6px;font-size:13px}
+.note{font-size:11px;color:var(--muted);margin-top:8px}
+.hm{display:grid;grid-template-columns:34px repeat(24,1fr);gap:2px;font-size:10px;color:var(--muted)}
+.hm .c{height:22px;border-radius:3px}.hm .rl{display:flex;align-items:center;font-size:11px}.hm .cl{text-align:center;font-size:9px}
+.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:8px}
+.legend .bar{height:8px;width:140px;border-radius:4px;background:linear-gradient(90deg,var(--b1),var(--b3),var(--b5),var(--b6))}
+.fac{display:grid;grid-template-columns:140px 1fr 36px;gap:8px;align-items:center;font-size:12px;margin:7px 0}
+.fac .bar{height:9px;background:var(--g1);border-radius:5px;overflow:hidden}.fac .bar i{display:block;height:100%;background:var(--b4);border-radius:5px}
+.mini{display:flex;gap:10px}.mini .k{flex:1;background:var(--g1);border-radius:8px;padding:10px;text-align:center}
+.mini .k b{display:block;font-size:20px;color:var(--b6)}.mini .k span{font-size:11px;color:var(--muted)}
+code{background:var(--g1);padding:2px 6px;border-radius:4px;font-size:12px}
+.badge{display:none;position:absolute;top:-10px;left:-10px;width:26px;height:26px;border-radius:50%;background:var(--b6);color:#fff;font-weight:700;font-size:13px;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);z-index:5}
+body.annot .badge{display:flex}body.annot .card.hl{outline:2px dashed var(--b4);outline-offset:2px}
+.legendcard{display:none;margin-top:16px}body.annot .legendcard{display:block}
+.lg{display:grid;grid-template-columns:30px 1fr 1.6fr;gap:6px 12px;font-size:12px;align-items:start}
+.lg .n{width:22px;height:22px;border-radius:50%;background:var(--b6);color:#fff;font-weight:700;display:grid;place-items:center;font-size:11px}
+.lg .hd{font-weight:600;color:var(--g5);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+footer{font-size:11px;color:var(--muted);text-align:center;padding:4px 28px 24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">A</div>
+  <div><h1>Alerta de gravedad de siniestros viales &middot; Bogot&aacute;</h1><small>Apoyo a la decisi&oacute;n de posicionamiento de ambulancias</small></div>
+  <div class="sp"></div>
+  <label class="toggle"><input type="checkbox" id="annot"> Ver anotaciones de la maqueta</label>
+</header>
+<div class="flag">MAQUETA (mockup) &middot; valores ilustrativos, ser&aacute;n reemplazados por los resultados del modelo y la API</div>
+
+<main>
+<div class="layout">
+  <!-- Columna izquierda -->
+  <div class="col">
+    <div class="card hl"><span class="badge">1</span>
+      <h2>Condiciones del siniestro</h2>
+      <div class="sub">Variables conocidas al momento del reporte.</div>
+      <div class="field"><label>Localidad</label><select id="f_loc"><option>Kennedy</option><option>Suba</option><option>Engativ&aacute;</option><option>Puente Aranda</option><option selected>Los M&aacute;rtires</option><option>Antonio Nari&ntilde;o</option><option>Usaqu&eacute;n</option></select></div>
+      <div class="field"><label>D&iacute;a</label><select id="f_dia"><option>Lunes</option><option>Martes</option><option>Mi&eacute;rcoles</option><option>Jueves</option><option>Viernes</option><option selected>S&aacute;bado</option><option>Domingo</option></select></div>
+      <div class="field"><label>Hora: <span id="hv">23:00</span></label><input type="range" id="f_hora" min="0" max="23" value="23"></div>
+      <div class="field"><label>Clase de siniestro</label><select id="f_clase"><option>Choque</option><option>Atropello</option><option>Volcamiento</option><option>Ca&iacute;da de ocupante</option></select></div>
+      <div class="field"><label>Tipo de v&iacute;a</label><select id="f_via"><option>Arterial</option><option>Intermedia</option><option>Local</option></select></div>
+      <div class="field"><label>Tipo de veh&iacute;culo</label><select id="f_veh"><option>Motocicleta</option><option>Autom&oacute;vil</option><option>Bus / buseta</option><option>Bicicleta</option></select></div>
+      <div class="field"><label>Actor vial</label><select id="f_act"><option>Conductor</option><option>Peat&oacute;n</option><option>Pasajero</option><option>Ciclista</option></select></div>
+      <button class="btn" id="calc">Estimar gravedad</button>
+    </div>
+  </div>
+
+  <!-- Columna derecha -->
+  <div class="col">
+    <div class="two">
+      <div class="card hl"><span class="badge">2</span>
+        <h2>Probabilidad por nivel de gravedad</h2>
+        <div class="sub">Respuesta de la API: <code>POST /predict</code></div>
+        <div class="prob"><div class="t"><span>Solo da&ntilde;os</span><b id="p0"></b></div><div class="bar"><i id="b0" style="background:var(--g3)"></i></div></div>
+        <div class="prob"><div class="t"><span>Con heridos</span><b id="p1"></b></div><div class="bar"><i id="b1" style="background:var(--b3)"></i></div></div>
+        <div class="prob"><div class="t"><span>Con muertos</span><b id="p2"></b></div><div class="bar"><i id="b2" style="background:var(--b6)"></i></div></div>
+      </div>
+      <div class="card hl"><span class="badge">3</span>
+        <h2>Nivel de alerta y recomendaci&oacute;n</h2>
+        <div class="sub">El modelo orienta, decide el coordinador.</div>
+        <div class="alertbox m" id="abox"><div><div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;opacity:.8">Nivel de alerta</div><div class="big" id="alv"></div></div><div style="font-size:13px" id="alt"></div></div>
+        <div class="rec" id="rec"></div>
+      </div>
+    </div>
+
+    <div class="card hl"><span class="badge">4</span>
+      <h2>Probabilidad de siniestro grave por d&iacute;a y hora</h2>
+      <div class="sub">M&aacute;s oscuro = mayor probabilidad de heridos o muertos. Indica cu&aacute;ndo reforzar unidades.</div>
+      <div class="hm" id="heat"></div>
+      <div class="legend"><span>Menor</span><div class="bar"></div><span>Mayor</span></div>
+    </div>
+
+    <div class="two">
+      <div class="card hl"><span class="badge">5</span>
+        <h2>Factores que m&aacute;s pesan</h2>
+        <div class="sub">Variables con mayor influencia en la probabilidad.</div>
+        <div id="gfacs"></div>
+      </div>
+      <div class="card hl"><span class="badge">6</span>
+        <h2>Desempe&ntilde;o del modelo</h2>
+        <div class="sub">Validaci&oacute;n temporal (entrena 2019-2024, prueba 2025).</div>
+        <div class="mini">
+          <div class="k"><b>78 %</b><span>Casos graves detectados (recall)</span></div>
+          <div class="k"><b>39 %</b><span>Falsas alarmas entre alertas</span></div>
+        </div>
+        <div class="note">Se prioriza detectar casos graves aunque aumenten las falsas alarmas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card legendcard">
+  <h2 style="margin-bottom:10px">Anotaciones: relaci&oacute;n de cada elemento con la pregunta de negocio</h2>
+  <div class="lg">
+    <div></div><div class="hd">Elemento</div><div class="hd">Qu&eacute; responde o qu&eacute; decisi&oacute;n apoya</div>
+    <div class="n">1</div><div>Condiciones del siniestro</div><div>Entrada del modelo: hora, d&iacute;a, localidad, clase, v&iacute;a, veh&iacute;culo y actor vial conocidos al reporte.</div>
+    <div class="n">2</div><div>Probabilidad por gravedad</div><div>&iquest;Qu&eacute; probabilidad tiene un siniestro de terminar solo con da&ntilde;os, con heridos o con muertos? (predictivo)</div>
+    <div class="n">3</div><div>Nivel de alerta y recomendaci&oacute;n</div><div>Convierte la probabilidad en acci&oacute;n: cu&aacute;ntas unidades y de qu&eacute; tipo (b&aacute;sica o medicalizada) posicionar.</div>
+    <div class="n">4</div><div>Mapa de calor d&iacute;a x hora</div><div>&iquest;En qu&eacute; combinaciones de hora y d&iacute;a se concentra la mayor gravedad esperada? (descriptivo)</div>
+    <div class="n">5</div><div>Factores que m&aacute;s pesan</div><div>&iquest;Qu&eacute; variables influyen m&aacute;s en la probabilidad? Explica la alerta y da confianza al coordinador.</div>
+    <div class="n">6</div><div>Desempe&ntilde;o del modelo</div><div>&iquest;Qu&eacute; tan bien detecta el modelo los casos graves y cu&aacute;ntas falsas alarmas implica?</div>
+  </div>
+</div>
+</main>
+<footer>Fuente de datos: Observatorio de Movilidad de Bogot&aacute; (2019-2025). Prototipo acad&eacute;mico &middot; Despliegue de soluciones anal&iacute;ticas.</footer>
+
+<script>
+document.getElementById('annot').onchange=e=>document.body.classList.toggle('annot',e.target.checked);
+if(location.hash==='#anotado'){document.body.classList.add('annot');document.getElementById('annot').checked=true;}
+const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+function pGrave(d,h){let p=.30;if(h>=6&&h<=9)p+=.10;if(h>=16&&h<=19)p+=.12;if(h>=11&&h<=14)p+=.04;if(h>=21||h<=3)p+=.08;if(d>=4&&(h>=21||h<=4))p+=.12;if(d>=5&&(h>=22||h<=4))p+=.06;if(d===6)p+=.03;return Math.min(.7,p);}
+const ramp=[[230,240,248],[195,220,239],[143,187,222],[90,147,194],[58,107,151],[39,73,107]];
+function col(t){t=Math.max(0,Math.min(1,t))*(ramp.length-1);const i=Math.floor(t),f=t-i,a=ramp[i],b=ramp[Math.min(i+1,ramp.length-1)];return `rgb(${a.map((v,k)=>Math.round(v+(b[k]-v)*f)).join(',')})`;}
+let h='<div></div>';for(let x=0;x<24;x++)h+=`<div class="cl">${x%3===0?x:''}</div>`;
+dias.forEach((n,d)=>{h+=`<div class="rl">${n}</div>`;for(let x=0;x<24;x++){const p=pGrave(d,x);h+=`<div class="c" title="${n} ${x}:00 - ${Math.round(p*100)} %" style="background:${col((p-.28)/.42)}"></div>`;}});
+document.getElementById('heat').innerHTML=h;
+const gf=[['Hora del día',.19],['Clase de siniestro',.17],['Tipo de vehículo',.15],['Actor vial',.13],['Localidad',.11],['Tipo de vía',.08]];
+document.getElementById('gfacs').innerHTML=gf.map(([n,v])=>`<div class="fac"><span>${n}</span><div class="bar"><i style="width:${v/.19*100}%"></i></div><b>${Math.round(v*100)}%</b></div>`).join('');
+const g=id=>document.getElementById(id).value, hr=document.getElementById('f_hora');
+hr.oninput=()=>document.getElementById('hv').textContent=String(hr.value).padStart(2,'0')+':00';
+function render(){
+  const hh=+g('f_hora'),d=document.getElementById('f_dia').selectedIndex;
+  let grave=.26+(pGrave(d,hh)-.30)*1.4
+   +({Choque:0,Atropello:.14,Volcamiento:.08,'Caída de ocupante':.10}[g('f_clase')])
+   +({Motocicleta:.12,'Automóvil':0,'Bus / buseta':.02,Bicicleta:.09}[g('f_veh')])
+   +({Conductor:0,'Peatón':.10,Pasajero:.03,Ciclista:.07}[g('f_act')])
+   +({Arterial:.05,Intermedia:.02,Local:0}[g('f_via')])
+   +(({'Los Mártires':.05,'Puente Aranda':.04,'Antonio Nariño':.03,Kennedy:.02})[g('f_loc')]||0);
+  grave=Math.max(.12,Math.min(.88,grave));
+  const mu=Math.min(.12,.006+(grave-.26)*.075+(g('f_clase')==='Atropello'?.012:0)),he=grave-mu,da=1-grave;
+  const pc=v=>(v*100).toFixed(1).replace('.',',')+' %';
+  [['0',da],['1',he],['2',mu]].forEach(([k,v])=>{document.getElementById('p'+k).textContent=pc(v);document.getElementById('b'+k).style.width=Math.max(2,v*100)+'%';});
+  const lv=grave>=.55?['ALTO','a']:grave>=.40?['MEDIO','m']:['BAJO','b'];
+  document.getElementById('abox').className='alertbox '+lv[1];
+  document.getElementById('alv').textContent=lv[0];
+  document.getElementById('alt').innerHTML=`Heridos o muertos: <b>${pc(grave)}</b><br>${g('f_loc')} &middot; ${document.getElementById('f_dia').value} ${String(hh).padStart(2,'0')}:00`;
+  const n=lv[0]==='ALTO'?2:lv[0]==='MEDIO'?1:0,med=mu>=.04||grave>=.55;
+  document.getElementById('rec').innerHTML=n===0?`<b>Sugerencia:</b> mantener cobertura base en ${g('f_loc')}.`:`<b>Sugerencia:</b> reforzar con ${n} unidad${n>1?'es':''} en ${g('f_loc')}; priorizar ${med?'<b>unidad medicalizada</b>':'<b>unidad b&aacute;sica</b>'}.`;
+}
+document.getElementById('calc').onclick=render;
+document.querySelectorAll('select,input').forEach(e=>e.addEventListener('change',render));
+render();
+</script>
+</body>
+</html>
