@@ -1,0 +1,163 @@
+# =============================================================================
+# config.yml - parameters for src/data.py and src/train.py
+#
+# USAGE
+#   python -m src.train --data data/processed/siniestros.parquet --all
+#   python -m src.train --data ... --all --config configs/variant.yml --experiment fatalidad_variant
+#
+# GOLDEN RULES
+#   1. Change ONE thing at a time, then compare runs in the MLflow UI.
+#   2. Give each variant its own experiment name so groups of runs don't mix.
+#   3. Tune with the val_* metrics (2024). Use test_* (2025) only to confirm.
+#   4. YAML: lists are [a, b]; "null" means None; indent with 2 spaces.
+#
+# MLFLOW VOCABULARY
+#   experiment = a group (experiment.name below)
+#   run        = one training inside it (each item of `experiments:` below)
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# experiment: general settings of the MLflow experiment (the group)
+# -----------------------------------------------------------------------------
+experiment:
+  # Name of the group in the MLflow UI. Change it for every variant.
+  name: fatalidad_siniestros_bogota
+
+  # Where MLflow stores runs.
+  #   local file DB : sqlite:///mlflow.db
+  #   server (AWS)  : http://127.0.0.1:8050   (on the same machine as the server)
+  #                   http://<EC2_PUBLIC_IP>:8050 (from another machine)
+  # Can be overridden with --tracking-uri.
+  tracking_uri: sqlite:///mlflow.db
+
+  # Random seed (gradient boosting holds out 10% of training data for early stopping;
+  # also used by permutation importance). Try 1, 2, 3 to check results are stable.
+  seed: 42
+
+  # Target recall used to choose the alert threshold on the VALIDATION year.
+  #   higher (0.90): catches more fatal crashes, many more alerts, lower precision
+  #   lower  (0.70): fewer alerts, higher precision, more fatal crashes missed
+  # Affects recall / precision / alert_rate only. PR-AUC and ROC-AUC do not change.
+  recall_target: 0.80
+
+  # Which column defines "fatal".
+  #   30d         : death within 30 days. Covers 2015-2025. Recommended.
+  #   tradicional : EMPTY in 2025, so the run fails (empty test set).
+  #   auto        : mixes both definitions. Not recommended.
+  gravedad_source: 30d
+
+  # CSV with the summary table of each execution.
+  output_csv: resultados_experimentos.csv
+
+
+# -----------------------------------------------------------------------------
+# split: temporal split (no shuffling)
+#   train: years <= train_max | val: val_year (threshold is chosen) | test: test_year
+# Must satisfy train_max < val_year < test_year (checked on load).
+# Note: most post-hoc flags are missing in 2025, so `completo` is not comparable there.
+# -----------------------------------------------------------------------------
+split:
+  train_max: 2023
+  val_year: 2024
+  test_year: 2025
+
+
+# -----------------------------------------------------------------------------
+# features: groups of variables (building blocks)
+#   Groups whose name starts with "cat_" are categorical (one-hot encoded).
+#   Any other group is numeric (missing values -> median; logreg also standardizes).
+#   You can create new groups, e.g. `posthoc_2025: [con_carga]`, and use them in feature_sets.
+# Variable names must exist in the data or be created in src/data.py (build_universe).
+# A name that doesn't exist is SILENTLY ignored: check n_features in MLflow after editing.
+# -----------------------------------------------------------------------------
+features:
+  # Known when the call is received
+  cat_llamada: [localidad, dia_semana, franja]
+  num_llamada: [hora, mes, latitud, longitud, es_fin_semana, es_madrugada]
+  # Known when responders arrive
+  cat_evento: [clase, elemento_choque, objeto_fijo]
+  # Known only after the investigation (flags). Missing for most flags in 2025.
+  posthoc: [con_velocidad, con_embriaguez, con_persona_mayor, con_carga]
+
+
+# -----------------------------------------------------------------------------
+# feature_sets: which groups each set uses (the sets are nested on purpose)
+# A run uses exactly ONE set. A set that includes `posthoc` also logs
+# cobertura_posthoc_val / cobertura_posthoc_test in MLflow.
+# -----------------------------------------------------------------------------
+feature_sets:
+  llamada:  [cat_llamada, num_llamada]
+  evento:   [cat_llamada, num_llamada, cat_evento]
+  completo: [cat_llamada, num_llamada, cat_evento, posthoc]
+
+
+# -----------------------------------------------------------------------------
+# preprocessing (shared by logreg, hgb, hgb_balanced)
+# -----------------------------------------------------------------------------
+preprocessing:
+  # Categories seen fewer than this many times in the TRAINING data are merged into a
+  # single "infrequent" column. Higher (50-100) = more conservative, fewer columns.
+  # Lower (5) = more detail, more noise. A decimal (0.001) means a fraction of rows.
+  min_frequency: 20
+
+
+# -----------------------------------------------------------------------------
+# baselines: simple references the models must beat
+# -----------------------------------------------------------------------------
+baselines:
+  # baseline_tabla: (fatal + k * prevalence) / (cases + k) per franja x localidad.
+  # Higher k pulls small cells toward the overall prevalence.
+  rate_table_k: 20
+
+
+# -----------------------------------------------------------------------------
+# models: DEFAULT hyperparameters (passed straight to scikit-learn).
+# A run can override them with `params` in the `experiments` list.
+# Keys must be valid scikit-learn argument names (a typo raises TypeError).
+# Any other valid argument can be added (e.g. min_samples_leaf: 50 under hgb).
+# They are logged in MLflow as clf__<name>.
+# -----------------------------------------------------------------------------
+models:
+  logreg:
+    C: 0.5               # inverse regularization: smaller = simpler model (try 0.05 - 5)
+    max_iter: 1000       # raise only if you see a ConvergenceWarning
+    class_weight: balanced   # or null
+  hgb:
+    max_depth: 4         # tree depth = interactions (try 2, 3, 4, 6, 8)
+    learning_rate: 0.06  # smaller = slower, needs more trees (try 0.03 - 0.1)
+    max_iter: 250        # max trees; early stopping may use fewer
+    l2_regularization: 1.0   # higher = smoother (try 0, 1, 5, 10)
+    class_weight: null
+  hgb_balanced:
+    max_depth: 4
+    learning_rate: 0.06
+    max_iter: 250
+    l2_regularization: 1.0
+    class_weight: balanced
+
+
+# -----------------------------------------------------------------------------
+# experiments: the RUNS executed by --all. Each item is a dict:
+#   model    : baseline_prior | baseline_tabla | logreg | hgb | hgb_balanced   (required)
+#   features : a key of feature_sets above                                      (required)
+#   name     : the run name shown in MLflow (optional; default <model>__<features>).
+#              Must be unique inside this list.
+#   params   : hyperparameter overrides for this run only (optional); everything
+#              else comes from `models` above. Ignored by baselines.
+# Comment a line out with # to skip a run.
+# -----------------------------------------------------------------------------
+experiments:
+  - {model: baseline_prior,  features: llamada,  name: baseline_prior__llamada}
+  - {model: baseline_tabla,  features: llamada,  name: baseline_tabla__llamada}
+  - {model: logreg,          features: llamada}
+  - {model: hgb,             features: llamada}
+  - {model: hgb_balanced,    features: llamada}
+  - {model: logreg,          features: evento}
+  - {model: hgb,             features: evento}
+  - {model: hgb_balanced,    features: evento}
+  - {model: logreg,          features: completo}
+  - {model: hgb,             features: completo}
+  - {model: hgb_balanced,    features: completo}
+  # Example of a custom run with its own name and hyperparameters:
+  # - {model: hgb, features: evento, name: hgb_evento_d2, params: {max_depth: 2}}

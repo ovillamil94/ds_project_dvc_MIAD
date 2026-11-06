@@ -2,31 +2,17 @@
 
 Universo: siniestros con víctimas (CON MUERTOS / CON HERIDOS).
 Objetivo: fatal = 1 si el siniestro tiene muertos.
-Split temporal: train <= 2023, validación 2024, test 2025.
+Los años del split y las listas de variables vienen de config.yml.
 """
 from __future__ import annotations
 
 import hashlib
 import unicodedata
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-TRAIN_MAX, VAL_YEAR, TEST_YEAR = 2023, 2024, 2025
-
-# Variables conocidas al recibir la llamada / al llegar al lugar
-CAT_LLAMADA = ["localidad", "dia_semana", "franja"]
-NUM_LLAMADA = ["hora", "mes", "latitud", "longitud", "es_fin_semana", "es_madrugada"]
-CAT_EVENTO = ["clase", "elemento_choque", "objeto_fijo"]
-# Banderas CON_* que SÍ existen en 2025 (se detectan en tiempo de ejecución) y las post-hoc (solo <=2024)
-POSTHOC = ["con_velocidad", "con_embriaguez", "con_persona_mayor", "con_carga"]
-
-FEATURE_SETS = {
-    "llamada": (CAT_LLAMADA, NUM_LLAMADA),
-    "evento": (CAT_LLAMADA + CAT_EVENTO, NUM_LLAMADA),
-    "completo": (CAT_LLAMADA + CAT_EVENTO, NUM_LLAMADA),  # + banderas, ver features_for()
-}
+from .config import load_config
 
 
 def _norm(s: pd.Series) -> pd.Series:
@@ -60,8 +46,8 @@ def standardize(df: pd.DataFrame, source: str = "30d") -> pd.DataFrame:
     """Adapta el parquet consolidado al esquema de trabajo.
 
     - Renombra columnas (codigo_siniestro -> id_siniestro, clase_nombre -> clase, ...).
-    - gravedad según `source`: "30d" (por defecto; es la definición de la exploración, 5.489 muertos y cubre 2015-2025),
-      "tradicional" (vacía en 2025) o "auto" (30d y, donde falte, la tradicional; mezcla definiciones, no recomendado).
+    - gravedad según `source`: "30d" (por defecto; cubre 2015-2025), "tradicional" (vacía en 2025)
+      o "auto" (30d y, donde falte, la tradicional; mezcla definiciones, no recomendado).
     - Elimina siniestros repetidos entre archivos anuales (llave id_siniestro + anio), conservando el archivo más reciente.
     """
     d = df.rename(columns={k: v for k, v in RENAME.items() if k in df.columns and v not in df.columns}).copy()
@@ -109,27 +95,33 @@ def build_universe(df: pd.DataFrame, source: str = "30d") -> pd.DataFrame:
     return d.reset_index(drop=True)
 
 
-def split_temporal(d: pd.DataFrame):
-    tr = d[d["anio"] <= TRAIN_MAX]
-    va = d[d["anio"] == VAL_YEAR]
-    te = d[d["anio"] == TEST_YEAR]
+def split_temporal(d: pd.DataFrame, cfg: dict | None = None):
+    s = (cfg or load_config())["split"]
+    tr = d[d["anio"] <= s["train_max"]]
+    va = d[d["anio"] == s["val_year"]]
+    te = d[d["anio"] == s["test_year"]]
     return tr, va, te
 
 
-def features_for(name: str, d: pd.DataFrame):
-    """Devuelve (cat_cols, num_cols) para un conjunto de variables, solo con columnas existentes."""
-    cat, num = FEATURE_SETS[name]
-    if name == "completo":
-        num = num + [c for c in POSTHOC if c in d.columns]
-    cat = [c for c in cat if c in d.columns]
-    num = [c for c in num if c in d.columns]
+def features_for(name: str, d: pd.DataFrame, cfg: dict | None = None):
+    """Devuelve (cat_cols, num_cols) para un conjunto de variables definido en config.yml.
+
+    Los grupos cuyo nombre empieza por 'cat_' son categóricos; los demás, numéricos.
+    Solo se conservan columnas que existen en `d`.
+    """
+    cfg = cfg or load_config()
+    cat, num = [], []
+    for g in cfg["feature_sets"][name]:
+        cols = [c for c in cfg["features"][g] if c in d.columns]
+        (cat if g.startswith("cat_") else num).extend(cols)
     return cat, num
 
 
-def prepare(path, source: str = "30d"):
+def prepare(path, source: str = "30d", cfg: dict | None = None):
+    cfg = cfg or load_config()
     raw = load_siniestros(path)
     d = build_universe(raw, source)
-    for c in POSTHOC:
+    for c in cfg["features"]["posthoc"]:
         if c in d:
             d[c] = pd.to_numeric(d[c].astype("float"), errors="coerce")
             # El consolidado solo registra la bandera cuando es verdadera (blanco = no hay factor).
@@ -139,9 +131,10 @@ def prepare(path, source: str = "30d"):
     return d
 
 
-def posthoc_coverage(d: pd.DataFrame, year: int) -> float:
-    """Proporción de banderas post-hoc que existen en un año (1 = todas; 0 = ninguna). Si es < 1, ese año no es comparable en 'completo'."""
-    cols = [c for c in POSTHOC if c in d.columns]
+def posthoc_coverage(d: pd.DataFrame, year: int, cfg: dict | None = None) -> float:
+    """Proporción de banderas post-hoc que existen en un año (1 = todas; 0 = ninguna)."""
+    cfg = cfg or load_config()
+    cols = [c for c in cfg["features"]["posthoc"] if c in d.columns]
     sub = d[d["anio"] == year]
     if not cols or not len(sub):
         return 0.0
