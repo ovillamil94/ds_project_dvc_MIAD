@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "vis00000000000000012",
+  "position": {
+    "x": 524,
+    "y": 173,
+    "width": 232,
+    "height": 93,
+    "z": 1200,
+    "tabOrder": 1200
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Vehículos por siniestro'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Siniestros"
+                    }
+                  },
+                  "Property": "Vehículos por siniestro"
+                }
+              },
+              "queryRef": "Siniestros.Vehículos por siniestro",
+              "active": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

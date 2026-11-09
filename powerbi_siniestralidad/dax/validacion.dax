@@ -1,0 +1,10 @@
+EVALUATE
+ROW(
+    "Total siniestros", [Total siniestros],
+    "Personas registradas", [Personas registradas],
+    "Lesionados", [Lesionados],
+    "Fallecidos", [Fallecidos],
+    "Vehículos registrados", [Vehículos registrados],
+    "Georreferenciados", [Georreferenciados],
+    "Siniestros fatales", [Siniestros fatales]
+)

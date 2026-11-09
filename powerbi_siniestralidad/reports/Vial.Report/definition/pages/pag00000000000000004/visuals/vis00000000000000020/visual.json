@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "vis00000000000000020",
+  "position": {
+    "x": 20,
+    "y": 279,
+    "width": 770,
+    "height": 244,
+    "z": 2000,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "barChart",
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Vehículos por clase'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "TiposVehiculo"
+                    }
+                  },
+                  "Property": "clase_vehiculo_nombre"
+                }
+              },
+              "queryRef": "TiposVehiculo.clase_vehiculo_nombre",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Siniestros"
+                    }
+                  },
+                  "Property": "Vehículos registrados"
+                }
+              },
+              "queryRef": "Siniestros.Vehículos registrados",
+              "active": true
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Siniestros"
+                    }
+                  },
+                  "Property": "Participación vehículos"
+                }
+              },
+              "queryRef": "Siniestros.Participación vehículos",
+              "active": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

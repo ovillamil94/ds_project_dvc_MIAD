@@ -1,0 +1,35 @@
+{
+  "name": "Movilidad Bogotá",
+  "dataColors": [
+    "#087F83",
+    "#243D61",
+    "#53BEB7",
+    "#E78B34",
+    "#BE3946",
+    "#7387A1"
+  ],
+  "background": "#F3F6FA",
+  "foreground": "#142D4F",
+  "tableAccent": "#087F83",
+  "good": "#087F83",
+  "neutral": "#E78B34",
+  "bad": "#BE3946",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI",
+      "color": "#142D4F"
+    },
+    "header": {
+      "fontFace": "Segoe UI",
+      "color": "#142D4F"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "color": "#142D4F"
+    },
+    "callout": {
+      "fontFace": "Segoe UI",
+      "color": "#142D4F"
+    }
+  }
+}

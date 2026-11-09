@@ -1,0 +1,717 @@
+{
+  "compatibilityLevel": 1600,
+  "model": {
+    "annotations": [
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"Siniestros\",\"Actores\",\"Vehiculos\",\"Calendario\",\"Localidades\",\"TiposActor\",\"TiposVehiculo\",\"RutaDatos\",\"OrigenParquet\",\"LeerParquet\",\"ClaveFuente\",\"Categoria\",\"DetalleCanonico\",\"Diccionario\"]"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DevMode\"]"
+      }
+    ],
+    "culture": "es-CO",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "expressions": [
+      {
+        "name": "RutaDatos",
+        "expression": "\"C:/ruta/ds_project_dvc_MIAD/data/processed\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]",
+        "kind": "m",
+        "lineageTag": "6ca00dc1-4d01-4412-bece-a69cb9596e73"
+      },
+      {
+        "name": "OrigenParquet",
+        "expression": "Folder.Contents(RutaDatos)",
+        "kind": "m",
+        "lineageTag": "4fe0d4fb-8392-4e5b-9eb1-2d150cc1c754"
+      },
+      {
+        "name": "LeerParquet",
+        "expression": [
+          "(nombre as text) as table =>",
+          "let",
+          "    Archivo = nombre & \".parquet\",",
+          "    Contenido = OrigenParquet{[Name = Archivo]}[Content]",
+          "in",
+          "    Parquet.Document(Contenido)"
+        ],
+        "kind": "m",
+        "lineageTag": "a75aec12-e426-42ec-aa82-4aab1df3b367"
+      },
+      {
+        "name": "ClaveFuente",
+        "expression": [
+          "(fila as record) as text =>",
+          "Text.From(fila[source_year], \"en-US\") & \"|\" & Text.From(fila[codigo_siniestro], \"en-US\")"
+        ],
+        "kind": "m",
+        "lineageTag": "7dcb0448-ba80-4fa2-917f-146a1f2a31ac"
+      },
+      {
+        "name": "Categoria",
+        "expression": [
+          "(valor as nullable text) as text =>",
+          "if valor = null or Text.Trim(valor) = \"\" then \"SIN INFORMACION\" else Text.Upper(Text.Trim(Text.Clean(valor)), \"es-CO\")"
+        ],
+        "kind": "m",
+        "lineageTag": "0bd14a2e-18f3-4c87-8d95-203457b27afe"
+      },
+      {
+        "name": "DetalleCanonico",
+        "expression": [
+          "(nombre as text, eliminarDuplicados as logical) as table =>",
+          "let",
+          "    Raw = LeerParquet(nombre),",
+          "    Filas = if eliminarDuplicados then Table.Distinct(Raw) else Raw,",
+          "    Claves = Table.AddColumn(Filas, \"ClaveFuente\", each ClaveFuente(_), type text),",
+          "    Seleccion = Table.NestedJoin(Claves, {\"ClaveFuente\"}, Table.SelectColumns(Siniestros, {\"ClaveFuente\"}), {\"ClaveFuente\"}, \"Padre\", JoinKind.Inner)",
+          "in",
+          "    Table.RemoveColumns(Seleccion, {\"Padre\"})"
+        ],
+        "kind": "m",
+        "lineageTag": "637a5b89-b825-4d07-b30e-e6615ada97fb"
+      },
+      {
+        "name": "Diccionario",
+        "expression": "Table.RenameColumns(LeerParquet(\"diccionario\"), {{\"SINIESTROS\",\"Entidad\"},{\"GRAVEDAD\",\"Dominio\"},{\"1\",\"Código\"},{\"Con Muertos\",\"Etiqueta\"}})",
+        "kind": "m",
+        "lineageTag": "c8622921-ffcc-4739-b36f-674976bec2f1"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "Siniestros_fecha_Calendario",
+        "fromColumn": "fecha",
+        "fromTable": "Siniestros",
+        "toColumn": "Fecha",
+        "toTable": "Calendario"
+      },
+      {
+        "name": "Siniestros_localidad_Localidades",
+        "fromColumn": "localidad",
+        "fromTable": "Siniestros",
+        "toColumn": "localidad",
+        "toTable": "Localidades"
+      },
+      {
+        "name": "Actores_ClaveFuente_Siniestros",
+        "fromColumn": "ClaveFuente",
+        "fromTable": "Actores",
+        "toColumn": "ClaveFuente",
+        "toTable": "Siniestros"
+      },
+      {
+        "name": "Vehiculos_ClaveFuente_Siniestros",
+        "fromColumn": "ClaveFuente",
+        "fromTable": "Vehiculos",
+        "toColumn": "ClaveFuente",
+        "toTable": "Siniestros"
+      },
+      {
+        "name": "Actores_condicion_TiposActor",
+        "fromColumn": "condicion",
+        "fromTable": "Actores",
+        "toColumn": "condicion",
+        "toTable": "TiposActor"
+      },
+      {
+        "name": "Vehiculos_clase_vehiculo_nombre_TiposVehiculo",
+        "fromColumn": "clase_vehiculo_nombre",
+        "fromTable": "Vehiculos",
+        "toColumn": "clase_vehiculo_nombre",
+        "toTable": "TiposVehiculo"
+      }
+    ],
+    "sourceQueryCulture": "es-CO",
+    "tables": [
+      {
+        "name": "Siniestros",
+        "columns": [
+          {
+            "name": "ClaveFuente",
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "790df9a3-d9ec-4728-8e60-3091e731cd47",
+            "sourceColumn": "ClaveFuente",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "codigo_siniestro",
+            "dataType": "int64",
+            "lineageTag": "8da2d831-f87d-4f6e-9fe7-a12ab85d2780",
+            "sourceColumn": "codigo_siniestro",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "source_year",
+            "dataType": "int64",
+            "lineageTag": "da44d974-d383-41b0-a60d-ca6c54130440",
+            "sourceColumn": "source_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "fecha",
+            "annotations": [
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "dd/MM/yyyy",
+            "lineageTag": "9db211f5-bbcf-43f2-a726-ec0bec783cff",
+            "sourceColumn": "fecha",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "hora",
+            "dataType": "int64",
+            "lineageTag": "65d87ece-4ca5-44bb-b536-90e731c789c0",
+            "sourceColumn": "hora",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "localidad",
+            "dataType": "string",
+            "lineageTag": "7c9680eb-0a7b-4ca3-8be3-9f7ffe801f46",
+            "sourceColumn": "localidad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "clase_nombre",
+            "dataType": "string",
+            "lineageTag": "acaa9e24-a2c8-4a82-a947-48bf3b921207",
+            "sourceColumn": "clase_nombre",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Severidad",
+            "dataType": "string",
+            "lineageTag": "97dadf74-d354-45b5-890e-246b6063d3e1",
+            "sourceColumn": "Severidad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "latitud",
+            "dataCategory": "Latitude",
+            "dataType": "double",
+            "lineageTag": "62af0631-11f6-4544-a1bd-0813ab0594b2",
+            "sourceColumn": "latitud",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "longitud",
+            "dataCategory": "Longitude",
+            "dataType": "double",
+            "lineageTag": "8a8ea2d6-b6c6-417a-b386-2ed401ccd9e7",
+            "sourceColumn": "longitud",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Georreferenciado",
+            "dataType": "boolean",
+            "lineageTag": "ecca9d38-aeec-4053-a6a9-3d702a60efe7",
+            "sourceColumn": "Georreferenciado",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_embriaguez",
+            "dataType": "boolean",
+            "lineageTag": "01094908-af53-4dfc-a946-bdc317c2e661",
+            "sourceColumn": "con_embriaguez",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_velocidad",
+            "dataType": "boolean",
+            "lineageTag": "9c0757be-33f7-421f-a607-3ff300616692",
+            "sourceColumn": "con_velocidad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_huecos",
+            "dataType": "boolean",
+            "lineageTag": "3d94724e-8129-48dc-b2e5-a433cbc6006e",
+            "sourceColumn": "con_huecos",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_moto",
+            "dataType": "boolean",
+            "lineageTag": "a45d3339-17bb-4d10-a199-07cc08c8d4d1",
+            "sourceColumn": "con_moto",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_peaton",
+            "dataType": "boolean",
+            "lineageTag": "7f7b9859-83e2-4e0e-bdeb-440932cf622a",
+            "sourceColumn": "con_peaton",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "con_bicicleta",
+            "dataType": "boolean",
+            "lineageTag": "6349189d-dc59-4b56-b8a5-176c2148acff",
+            "sourceColumn": "con_bicicleta",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "30aac088-f69a-432f-842b-9bd7aa99f2c4",
+        "measures": [
+          {
+            "name": "Total siniestros",
+            "description": "Eventos canónicos en el contexto de fecha, localidad y severidad.",
+            "expression": "DISTINCTCOUNT(Siniestros[ClaveFuente])",
+            "formatString": "#,0",
+            "lineageTag": "84aa271d-f73a-4cf0-9c07-fde84a749487"
+          },
+          {
+            "name": "Personas registradas",
+            "description": "Registros de actor deduplicados exactamente dentro de la edición elegida.",
+            "expression": "COUNTROWS(Actores)",
+            "formatString": "#,0",
+            "lineageTag": "b5f272ca-8551-412a-8e62-253490b37d41"
+          },
+          {
+            "name": "Lesionados",
+            "description": "Personas registradas con lesión según el criterio de gravedad disponible.",
+            "expression": "CALCULATE([Personas registradas], KEEPFILTERS(Actores[Resultado] = \"LESIONADO\"))",
+            "formatString": "#,0",
+            "lineageTag": "70b8ee76-cccb-4831-98e3-b81b15706c40"
+          },
+          {
+            "name": "Fallecidos",
+            "description": "Personas registradas fallecidas según el criterio de gravedad disponible.",
+            "expression": "CALCULATE([Personas registradas], KEEPFILTERS(Actores[Resultado] = \"FALLECIDO\"))",
+            "formatString": "#,0",
+            "lineageTag": "502eadfa-b5d2-4b67-ab3b-3cab986cb55c"
+          },
+          {
+            "name": "Vehículos registrados",
+            "description": "Filas vehiculares de la edición elegida, incluidas las que carecen de código de vehículo.",
+            "expression": "COUNTROWS(Vehiculos)",
+            "formatString": "#,0",
+            "lineageTag": "5ac709bc-0db9-4e5f-8b6c-eee905dca027"
+          },
+          {
+            "name": "Siniestros por actor",
+            "description": "Eventos con al menos un registro del actor seleccionado.",
+            "expression": "DISTINCTCOUNT(Actores[ClaveFuente])",
+            "formatString": "#,0",
+            "lineageTag": "90b159c3-48b6-41b8-93fd-1ab29b586ecb"
+          },
+          {
+            "name": "Siniestros por vehículo",
+            "description": "Eventos con al menos un vehículo del tipo seleccionado.",
+            "expression": "DISTINCTCOUNT(Vehiculos[ClaveFuente])",
+            "formatString": "#,0",
+            "lineageTag": "9972b71c-ea6a-41af-91b0-6b7626c833ab"
+          },
+          {
+            "name": "Vehículos por siniestro",
+            "description": "Promedio de vehículos del contexto por evento que tiene esos vehículos.",
+            "expression": "DIVIDE([Vehículos registrados], [Siniestros por vehículo])",
+            "formatString": "0.00",
+            "lineageTag": "dc165cfb-7ba9-4df4-83e7-7872dda58288"
+          },
+          {
+            "name": "Participación actores",
+            "description": "Cuota sobre los tipos de actor visibles en la selección.",
+            "expression": "DIVIDE([Personas registradas], CALCULATE([Personas registradas], ALLSELECTED(TiposActor[condicion])))",
+            "formatString": "0.0%",
+            "lineageTag": "66215c66-429f-426c-b7f5-e83d99ee7abd"
+          },
+          {
+            "name": "Participación vehículos",
+            "description": "Cuota sobre los tipos de vehículo visibles en la selección.",
+            "expression": "DIVIDE([Vehículos registrados], CALCULATE([Vehículos registrados], ALLSELECTED(TiposVehiculo[clase_vehiculo_nombre])))",
+            "formatString": "0.0%",
+            "lineageTag": "ea37243f-5f8f-4da4-ba7b-a0aa46257402"
+          },
+          {
+            "name": "Siniestros fatales",
+            "description": "Eventos clasificados con muertos en la fuente de siniestros.",
+            "expression": "CALCULATE([Total siniestros], KEEPFILTERS(Siniestros[Severidad] = \"CON MUERTOS\"))",
+            "formatString": "#,0",
+            "lineageTag": "025dffbb-165d-43ad-93eb-9e9b42b3cd4e"
+          },
+          {
+            "name": "Porcentaje fatal",
+            "description": "Proporción fatal entre los eventos con severidad informada.",
+            "expression": "DIVIDE([Siniestros fatales], CALCULATE([Total siniestros], KEEPFILTERS(Siniestros[Severidad] <> \"SIN INFORMACION\")))",
+            "formatString": "0.0%",
+            "lineageTag": "edd5b90e-ca04-4bd7-a674-09dc08edd35d"
+          },
+          {
+            "name": "Georreferenciados",
+            "description": "Eventos con un par latitud y longitud dentro del rango de control.",
+            "expression": "CALCULATE([Total siniestros], KEEPFILTERS(Siniestros[Georreferenciado] = TRUE()))",
+            "formatString": "#,0",
+            "lineageTag": "3b6a2e5c-c4a1-47f1-89c1-72aa8889ce68"
+          },
+          {
+            "name": "Cobertura geográfica",
+            "description": "Proporción de eventos con coordenadas dentro del rango de control.",
+            "expression": "DIVIDE([Georreferenciados], [Total siniestros])",
+            "formatString": "0.0%",
+            "lineageTag": "589fc99e-b973-4e23-927c-02ccc366b94e"
+          },
+          {
+            "name": "Siniestros actor y vehículo",
+            "description": "Eventos donde coexisten el actor y el tipo de vehículo seleccionados.",
+            "expression": "CALCULATE([Total siniestros], KEEPFILTERS(TREATAS(VALUES(Actores[ClaveFuente]), Siniestros[ClaveFuente])), KEEPFILTERS(TREATAS(VALUES(Vehiculos[ClaveFuente]), Siniestros[ClaveFuente])))",
+            "formatString": "#,0",
+            "lineageTag": "2fc53038-6824-4ed4-b7c5-bdfd4e68b76a"
+          },
+          {
+            "name": "Siniestros con velocidad",
+            "description": "Eventos con bandera de velocidad verdadera.",
+            "expression": "CALCULATE([Total siniestros], KEEPFILTERS(Siniestros[con_velocidad] = TRUE()))",
+            "formatString": "#,0",
+            "lineageTag": "3cbae5df-6770-474c-ae75-a7615e1e74c3"
+          },
+          {
+            "name": "Siniestros con embriaguez",
+            "description": "Eventos con bandera de embriaguez verdadera.",
+            "expression": "CALCULATE([Total siniestros], KEEPFILTERS(Siniestros[con_embriaguez] = TRUE()))",
+            "formatString": "#,0",
+            "lineageTag": "220d93c5-d966-4fd0-938a-a09248479add"
+          },
+          {
+            "name": "Mes anterior",
+            "description": "Eventos en las fechas visibles desplazadas un período.",
+            "expression": "CALCULATE([Total siniestros], DATEADD(Calendario[Fecha], -1, MONTH))",
+            "formatString": "#,0",
+            "lineageTag": "8da790c7-b1fd-4707-9720-a31d1bc94e88"
+          },
+          {
+            "name": "Variación mensual",
+            "description": "Cambio relativo frente al período mensual anterior.",
+            "expression": "IF([Mes anterior] > 0, DIVIDE([Total siniestros] - [Mes anterior], [Mes anterior]))",
+            "formatString": "0.0%",
+            "lineageTag": "1cecda1e-b44b-4ab6-9d67-d0efd8c3bb15"
+          },
+          {
+            "name": "Año anterior",
+            "description": "Eventos en las fechas visibles desplazadas un período.",
+            "expression": "CALCULATE([Total siniestros], DATEADD(Calendario[Fecha], -1, YEAR))",
+            "formatString": "#,0",
+            "lineageTag": "7ddde1db-c5fa-4012-aa4a-c9721ac460cf"
+          },
+          {
+            "name": "Variación anual",
+            "description": "Cambio relativo frente al período anual anterior.",
+            "expression": "IF([Año anterior] > 0, DIVIDE([Total siniestros] - [Año anterior], [Año anterior]))",
+            "formatString": "0.0%",
+            "lineageTag": "f5b4dd29-d457-465a-ac63-8074b4e0a791"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Siniestros",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Raw = LeerParquet(\"siniestros\"),",
+                "    Tipos = Table.TransformColumnTypes(Raw, {{\"fecha\", type date}, {\"source_year\", Int64.Type}, {\"codigo_siniestro\", Int64.Type}, {\"hora\", Int64.Type}, {\"latitud\", type number}, {\"longitud\", type number}}),",
+                "    Fuentes = Table.AddColumn(Tipos, \"ClaveFuente\", each ClaveFuente(_), type text),",
+                "    Control = if List.Contains(Fuentes[fecha], null) or Table.RowCount(Fuentes) <> List.Count(List.Distinct(Fuentes[ClaveFuente])) then error \"Fecha ausente o clave de fuente duplicada\" else Fuentes,",
+                "    Eventos = Table.AddColumn(Control, \"AnioEvento\", each Date.Year([fecha]), Int64.Type),",
+                "    Ediciones = Table.Group(Eventos, {\"AnioEvento\", \"codigo_siniestro\"}, {{\"Edicion\", each List.Max([source_year]), Int64.Type}, {\"Formularios\", each List.Distinct([formulario]), type list}, {\"N\", each Table.RowCount(_), Int64.Type}}),",
+                "    Validas = Table.SelectRows(Ediciones, each if [N] > 1 and (List.Count([Formularios]) <> 1 or List.Contains([Formularios], null)) then error \"Ediciones con formularios incompatibles\" else true),",
+                "    Canonicos = Table.RemoveColumns(Table.NestedJoin(Eventos, {\"AnioEvento\", \"codigo_siniestro\", \"source_year\"}, Validas, {\"AnioEvento\", \"codigo_siniestro\", \"Edicion\"}, \"Edicion\", JoinKind.Inner), {\"Edicion\"}),",
+                "    Localidad = Table.TransformColumns(Canonicos, {{\"localidad\", Categoria, type text}, {\"clase_nombre\", Categoria, type text}}),",
+                "    Gravedad = Table.AddColumn(Localidad, \"Severidad\", each Categoria([gravedad_30d_nombre] ?? [gravedad_tradicional_nombre]), type text),",
+                "    Geo = Table.AddColumn(Gravedad, \"Georreferenciado\", each [latitud] <> null and [longitud] <> null and [latitud] >= 4 and [latitud] <= 5 and [longitud] >= -75 and [longitud] <= -73, type logical),",
+                "    Resultado = Table.SelectColumns(Geo, {\"ClaveFuente\",\"codigo_siniestro\",\"source_year\",\"fecha\",\"hora\",\"localidad\",\"clase_nombre\",\"Severidad\",\"latitud\",\"longitud\",\"Georreferenciado\",\"con_embriaguez\",\"con_velocidad\",\"con_huecos\",\"con_moto\",\"con_peaton\",\"con_bicicleta\"})",
+                "in",
+                "    Resultado"
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Actores",
+        "columns": [
+          {
+            "name": "ClaveFuente",
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "f11d9c1e-92b1-4321-8c6a-e6b92a07fe11",
+            "sourceColumn": "ClaveFuente",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "condicion",
+            "dataType": "string",
+            "lineageTag": "4f4240c6-84cf-4da2-b3b0-42af2aca89d4",
+            "sourceColumn": "condicion",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "condicion_especifica",
+            "dataType": "string",
+            "lineageTag": "7d25cad8-7443-4604-92b2-47a048e48398",
+            "sourceColumn": "condicion_especifica",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sexo",
+            "dataType": "string",
+            "lineageTag": "d96a0ae2-f6a5-40a0-8141-a7cc781761a2",
+            "sourceColumn": "sexo",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "edad",
+            "dataType": "int64",
+            "lineageTag": "1450dd35-fc15-473c-bc64-798dcafa73e0",
+            "sourceColumn": "edad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Resultado",
+            "dataType": "string",
+            "lineageTag": "3f88d3af-3732-4c7e-ab37-d8d6880d5f12",
+            "sourceColumn": "Resultado",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "f81db0c7-3c76-4180-bc95-a969ed2ef292",
+        "partitions": [
+          {
+            "name": "Actores",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Base = DetalleCanonico(\"actor_vial\", true),",
+                "    Categorias = Table.TransformColumns(Base, {{\"condicion\", Categoria, type text}, {\"condicion_especifica\", Categoria, type text}, {\"sexo\", Categoria, type text}}),",
+                "    Gravedad = Table.AddColumn(Categorias, \"Resultado\", each let g = Categoria([gravedad_30d] ?? [gravedad_tradicional]) in",
+                "        if List.Contains({\"HERIDO\",\"HERIDO HOSPITALIZADO\",\"HERIDO VALORADO\"}, g) then \"LESIONADO\"",
+                "        else if List.Contains({\"MUERTO\",\"MUERTA\"}, g) then \"FALLECIDO\"",
+                "        else g, type text),",
+                "    Edad = Table.TransformColumns(Gravedad, {{\"edad\", each if _ <> null and _ >= 0 and _ <= 120 then _ else null, Int64.Type}})",
+                "in",
+                "    Table.SelectColumns(Edad, {\"ClaveFuente\",\"condicion\",\"condicion_especifica\",\"sexo\",\"edad\",\"Resultado\"})"
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Vehiculos",
+        "columns": [
+          {
+            "name": "ClaveFuente",
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "df7192e7-d6ba-4479-991f-a7cbf91bd155",
+            "sourceColumn": "ClaveFuente",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "codigo_vehiculo",
+            "dataType": "int64",
+            "lineageTag": "c0eda877-4283-4d6f-a782-bc58668bd07e",
+            "sourceColumn": "codigo_vehiculo",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "clase_vehiculo_nombre",
+            "dataType": "string",
+            "lineageTag": "042e0413-f00f-4b4e-b90c-3dcecfbc553a",
+            "sourceColumn": "clase_vehiculo_nombre",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "servicio_nombre",
+            "dataType": "string",
+            "lineageTag": "a98a6c99-b567-44a7-9c44-f498f2b1d547",
+            "sourceColumn": "servicio_nombre",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "en_fuga",
+            "dataType": "boolean",
+            "lineageTag": "c6d37fcb-a41c-47ff-b950-b38787aef774",
+            "sourceColumn": "en_fuga",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "a89b1a25-00e0-42e5-a532-8c6edb410561",
+        "partitions": [
+          {
+            "name": "Vehiculos",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Base = DetalleCanonico(\"vehiculos\", false),",
+                "    Categorias = Table.TransformColumns(Base, {{\"clase_vehiculo_nombre\", Categoria, type text}, {\"servicio_nombre\", Categoria, type text}})",
+                "in",
+                "    Table.SelectColumns(Categorias, {\"ClaveFuente\",\"codigo_vehiculo\",\"clase_vehiculo_nombre\",\"servicio_nombre\",\"en_fuga\"})"
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Calendario",
+        "columns": [
+          {
+            "name": "Fecha",
+            "annotations": [
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "dd/MM/yyyy",
+            "isKey": true,
+            "lineageTag": "41848735-e958-4fff-9a4d-186e47ccc6a6",
+            "sourceColumn": "Fecha",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Año",
+            "dataType": "int64",
+            "lineageTag": "52d4a135-08b7-426d-8fcd-a9e9f5eac8e8",
+            "sourceColumn": "Año",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Mes",
+            "dataType": "string",
+            "lineageTag": "f85824b2-877d-4f65-95a8-c1e36ddf61e7",
+            "sourceColumn": "Mes",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Día",
+            "dataType": "string",
+            "lineageTag": "a1aa823f-59d4-449c-a220-adc4bd21374f",
+            "sortByColumn": "OrdenDia",
+            "sourceColumn": "Día",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "OrdenDia",
+            "dataType": "int64",
+            "isHidden": true,
+            "lineageTag": "88e35fc0-8872-4a0c-ada2-95b58824960e",
+            "sourceColumn": "OrdenDia",
+            "summarizeBy": "none"
+          }
+        ],
+        "dataCategory": "Time",
+        "lineageTag": "2726e711-26ed-49e8-9e6a-fb7df4d0e637",
+        "partitions": [
+          {
+            "name": "Calendario",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Inicio = Date.StartOfYear(List.Min(Siniestros[fecha])),",
+                "    Fin = Date.EndOfYear(List.Max(Siniestros[fecha])),",
+                "    Fechas = Table.FromColumns({List.Dates(Inicio, Duration.Days(Fin - Inicio) + 1, #duration(1,0,0,0))}, type table [Fecha=date]),",
+                "    Anio = Table.AddColumn(Fechas, \"Año\", each Date.Year([Fecha]), Int64.Type),",
+                "    Mes = Table.AddColumn(Anio, \"Mes\", each Date.ToText([Fecha], \"yyyy-MM\", \"es-CO\"), type text),",
+                "    Dia = Table.AddColumn(Mes, \"Día\", each Date.DayOfWeekName([Fecha], \"es-CO\"), type text)",
+                "in",
+                "    Table.AddColumn(Dia, \"OrdenDia\", each Date.DayOfWeek([Fecha], Day.Monday) + 1, Int64.Type)"
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Localidades",
+        "columns": [
+          {
+            "name": "localidad",
+            "dataType": "string",
+            "lineageTag": "f65097c9-b8cd-4bc3-a0a2-63ceae35265a",
+            "sourceColumn": "localidad",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "450ff617-f542-487c-8016-76f87150801f",
+        "partitions": [
+          {
+            "name": "Localidades",
+            "mode": "import",
+            "source": {
+              "expression": "Table.Distinct(Table.SelectColumns(Siniestros, {\"localidad\"}))",
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "TiposActor",
+        "columns": [
+          {
+            "name": "condicion",
+            "dataType": "string",
+            "lineageTag": "5af4915b-bc2b-4511-b3a0-b69790e27c07",
+            "sourceColumn": "condicion",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "07ff0306-e4ab-4660-a325-91fe72e2922e",
+        "partitions": [
+          {
+            "name": "TiposActor",
+            "mode": "import",
+            "source": {
+              "expression": "Table.Distinct(Table.SelectColumns(Actores, {\"condicion\"}))",
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "TiposVehiculo",
+        "columns": [
+          {
+            "name": "clase_vehiculo_nombre",
+            "dataType": "string",
+            "lineageTag": "69f8c19c-a94a-4225-819f-e5a5b8bf9b63",
+            "sourceColumn": "clase_vehiculo_nombre",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "d74e3134-542e-4970-9c64-fda136b1bf67",
+        "partitions": [
+          {
+            "name": "TiposVehiculo",
+            "mode": "import",
+            "source": {
+              "expression": "Table.Distinct(Table.SelectColumns(Vehiculos, {\"clase_vehiculo_nombre\"}))",
+              "type": "m"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "vis00000000000000022",
+  "position": {
+    "x": 20,
+    "y": 537,
+    "width": 770,
+    "height": 242,
+    "z": 2200,
+    "tabOrder": 2200
+  },
+  "visual": {
+    "visualType": "barChart",
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Resultados por actor'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "TiposActor"
+                    }
+                  },
+                  "Property": "condicion"
+                }
+              },
+              "queryRef": "TiposActor.condicion",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Siniestros"
+                    }
+                  },
+                  "Property": "Personas registradas"
+                }
+              },
+              "queryRef": "Siniestros.Personas registradas",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Actores"
+                    }
+                  },
+                  "Property": "Resultado"
+                }
+              },
+              "queryRef": "Actores.Resultado",
+              "active": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

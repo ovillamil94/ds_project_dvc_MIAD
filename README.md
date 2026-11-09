@@ -315,3 +315,8 @@ No compartas el token ni lo subas al repositorio.
 - Haz siempre `git pull` y `dvc pull` antes de empezar a trabajar.
 - Si los datos contienen información personal, confirma que pueden compartirse antes de subirlos al remote.
 - El remote en Drive no es una copia de seguridad completa. Si alguien borra `dvcstore`, los punteros de Git no sirven. Mantén una copia adicional de los datos originales.
+
+
+## Tablero de Power BI
+
+El [proyecto editable de siniestralidad vial](powerbi_siniestralidad/README.md) incluye cinco páginas y consume los Parquet versionados por DVC en `data/processed`.

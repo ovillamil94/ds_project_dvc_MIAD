@@ -1,0 +1,1230 @@
+{
+  "siniestros": {
+    "filas": 416283,
+    "duplicados_exactos_excedentes": 0,
+    "columnas": [
+      {
+        "campo": "source_year",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": 2019,
+        "maximo": 2025
+      },
+      {
+        "campo": "source_file",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "Base_Anuario_de_Siniestralidad_Vial_2019.xlsx",
+        "maximo": "Base_Anuario_de_Siniestralidad_Vial_2025.xlsx"
+      },
+      {
+        "campo": "codigo_siniestro",
+        "tipo": "BIGINT",
+        "nulos": 0,
+        "distintos_no_nulos": 290190,
+        "minimo": 4401419,
+        "maximo": 11342496
+      },
+      {
+        "campo": "formulario",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 290185,
+        "minimo": "A0000041829",
+        "maximo": "AA20668"
+      },
+      {
+        "campo": "fecha",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 0,
+        "distintos_no_nulos": 4018,
+        "minimo": "2015-01-01 00:00:00",
+        "maximo": "2025-12-31 00:00:00"
+      },
+      {
+        "campo": "hora",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 24,
+        "minimo": 0,
+        "maximo": 23
+      },
+      {
+        "campo": "minuto",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 60,
+        "minimo": 0,
+        "maximo": 59
+      },
+      {
+        "campo": "fecha_hora",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 0,
+        "distintos_no_nulos": 241919,
+        "minimo": "2015-01-01 01:05:00",
+        "maximo": "2025-12-31 23:40:00"
+      },
+      {
+        "campo": "anio",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 11,
+        "minimo": 2015,
+        "maximo": 2025
+      },
+      {
+        "campo": "mes",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 12,
+        "minimo": 1,
+        "maximo": 12
+      },
+      {
+        "campo": "dia",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 31,
+        "minimo": 1,
+        "maximo": 31
+      },
+      {
+        "campo": "dia_semana",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "DOMINGO",
+        "maximo": "VIERNES"
+      },
+      {
+        "campo": "direccion",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 140897,
+        "minimo": "AC 0-KR 0 2",
+        "maximo": "Vía Quiba - Bogotá Soacha"
+      },
+      {
+        "campo": "localidad_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 339283,
+        "distintos_no_nulos": 20,
+        "minimo": 1,
+        "maximo": 20
+      },
+      {
+        "campo": "localidad",
+        "tipo": "VARCHAR",
+        "nulos": 1,
+        "distintos_no_nulos": 20,
+        "minimo": "ANTONIO NARINO",
+        "maximo": "USME"
+      },
+      {
+        "campo": "diseno_lugar_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 364730,
+        "distintos_no_nulos": 12,
+        "minimo": 1,
+        "maximo": 13
+      },
+      {
+        "campo": "longitud",
+        "tipo": "DOUBLE",
+        "nulos": 101608,
+        "distintos_no_nulos": 165270,
+        "minimo": -74.2472704908,
+        "maximo": -74.007
+      },
+      {
+        "campo": "latitud",
+        "tipo": "DOUBLE",
+        "nulos": 101608,
+        "distintos_no_nulos": 167085,
+        "minimo": 4.04395280668,
+        "maximo": 4.82804068299998
+      },
+      {
+        "campo": "clase_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 14,
+        "distintos_no_nulos": 6,
+        "minimo": 1,
+        "maximo": 6
+      },
+      {
+        "campo": "clase_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "ATROPELLO",
+        "maximo": "VOLCAMIENTO"
+      },
+      {
+        "campo": "choque_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 68947,
+        "distintos_no_nulos": 5,
+        "minimo": 1,
+        "maximo": 5
+      },
+      {
+        "campo": "choque_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 68924,
+        "distintos_no_nulos": 5,
+        "minimo": "OBJETO FIJO",
+        "maximo": "VEHICULO"
+      },
+      {
+        "campo": "objeto_fijo_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 412796,
+        "distintos_no_nulos": 16,
+        "minimo": 1,
+        "maximo": 16
+      },
+      {
+        "campo": "objeto_fijo_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 403476,
+        "distintos_no_nulos": 24,
+        "minimo": "ARBOL",
+        "maximo": "VEHICULO ESTACIONADO"
+      },
+      {
+        "campo": "gravedad_tradicional_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 11573,
+        "distintos_no_nulos": 3,
+        "minimo": 1,
+        "maximo": 3
+      },
+      {
+        "campo": "gravedad_tradicional_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 11573,
+        "distintos_no_nulos": 3,
+        "minimo": "CON HERIDOS",
+        "maximo": "SOLO DANOS"
+      },
+      {
+        "campo": "gravedad_30d_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 86691,
+        "distintos_no_nulos": 3,
+        "minimo": 1,
+        "maximo": 3
+      },
+      {
+        "campo": "gravedad_30d_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 86691,
+        "distintos_no_nulos": 3,
+        "minimo": "CON HERIDOS",
+        "maximo": "SOLO DANOS"
+      },
+      {
+        "campo": "con_bicicleta",
+        "tipo": "BOOLEAN",
+        "nulos": 348070,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_carga",
+        "tipo": "BOOLEAN",
+        "nulos": 331907,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_embriaguez",
+        "tipo": "BOOLEAN",
+        "nulos": 373442,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_huecos",
+        "tipo": "BOOLEAN",
+        "nulos": 378140,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_menores",
+        "tipo": "BOOLEAN",
+        "nulos": 361388,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_moto",
+        "tipo": "BOOLEAN",
+        "nulos": 255909,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_peaton",
+        "tipo": "BOOLEAN",
+        "nulos": 335455,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_persona_mayor",
+        "tipo": "BOOLEAN",
+        "nulos": 321811,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_rutas",
+        "tipo": "BOOLEAN",
+        "nulos": 381187,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpi",
+        "tipo": "BOOLEAN",
+        "nulos": 313273,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpp",
+        "tipo": "BOOLEAN",
+        "nulos": 331625,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_velocidad",
+        "tipo": "BOOLEAN",
+        "nulos": 378329,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_sitp",
+        "tipo": "BOOLEAN",
+        "nulos": 355437,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_transmilenio",
+        "tipo": "BOOLEAN",
+        "nulos": 416065,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_troncal",
+        "tipo": "BOOLEAN",
+        "nulos": 410808,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_alimentador",
+        "tipo": "BOOLEAN",
+        "nulos": 410921,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_zonal",
+        "tipo": "BOOLEAN",
+        "nulos": 368225,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_provisional",
+        "tipo": "BOOLEAN",
+        "nulos": 411784,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_articulado",
+        "tipo": "BOOLEAN",
+        "nulos": 413965,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_biarticulado",
+        "tipo": "BOOLEAN",
+        "nulos": 414657,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_padron_dual",
+        "tipo": "BOOLEAN",
+        "nulos": 414877,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_servicio_especial",
+        "tipo": "BOOLEAN",
+        "nulos": 405570,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_taxi",
+        "tipo": "BOOLEAN",
+        "nulos": 363992,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      }
+    ],
+    "periodo": [
+      "2015-01-01 00:00:00",
+      "2025-12-31 00:00:00"
+    ]
+  },
+  "actor_vial": {
+    "filas": 912522,
+    "duplicados_exactos_excedentes": 127,
+    "columnas": [
+      {
+        "campo": "source_year",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": 2019,
+        "maximo": 2025
+      },
+      {
+        "campo": "source_file",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "Base_Anuario_de_Siniestralidad_Vial_2019.xlsx",
+        "maximo": "Base_Anuario_de_Siniestralidad_Vial_2025.xlsx"
+      },
+      {
+        "campo": "codigo_siniestro",
+        "tipo": "BIGINT",
+        "nulos": 0,
+        "distintos_no_nulos": 290041,
+        "minimo": 4401419,
+        "maximo": 11342496
+      },
+      {
+        "campo": "codigo_accidentado",
+        "tipo": "BIGINT",
+        "nulos": 75646,
+        "distintos_no_nulos": 636198,
+        "minimo": 2452497,
+        "maximo": 14476189
+      },
+      {
+        "campo": "codigo_vehiculo",
+        "tipo": "SMALLINT",
+        "nulos": 34489,
+        "distintos_no_nulos": 31,
+        "minimo": 0,
+        "maximo": 30
+      },
+      {
+        "campo": "codigo_victima",
+        "tipo": "SMALLINT",
+        "nulos": 186353,
+        "distintos_no_nulos": 72,
+        "minimo": 0,
+        "maximo": 71
+      },
+      {
+        "campo": "formulario",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 290036,
+        "minimo": "A0000041829",
+        "maximo": "AA20668"
+      },
+      {
+        "campo": "fecha",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 0,
+        "distintos_no_nulos": 4018,
+        "minimo": "2015-01-01 00:00:00",
+        "maximo": "2025-12-31 00:00:00"
+      },
+      {
+        "campo": "hora",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 24,
+        "minimo": 0,
+        "maximo": 23
+      },
+      {
+        "campo": "minuto",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 60,
+        "minimo": 0,
+        "maximo": 59
+      },
+      {
+        "campo": "fecha_hora",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 0,
+        "distintos_no_nulos": 241834,
+        "minimo": "2015-01-01 01:05:00",
+        "maximo": "2025-12-31 23:40:00"
+      },
+      {
+        "campo": "anio",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 11,
+        "minimo": 2015,
+        "maximo": 2025
+      },
+      {
+        "campo": "mes",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 12,
+        "minimo": 1,
+        "maximo": 12
+      },
+      {
+        "campo": "dia",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 31,
+        "minimo": 1,
+        "maximo": 31
+      },
+      {
+        "campo": "dia_semana",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "DOMINGO",
+        "maximo": "VIERNES"
+      },
+      {
+        "campo": "localidad",
+        "tipo": "VARCHAR",
+        "nulos": 186355,
+        "distintos_no_nulos": 20,
+        "minimo": "ANTONIO NARINO",
+        "maximo": "USME"
+      },
+      {
+        "campo": "edad",
+        "tipo": "SMALLINT",
+        "nulos": 77033,
+        "distintos_no_nulos": 121,
+        "minimo": -1,
+        "maximo": 2021
+      },
+      {
+        "campo": "sexo",
+        "tipo": "VARCHAR",
+        "nulos": 12427,
+        "distintos_no_nulos": 4,
+        "minimo": "FEMENINO",
+        "maximo": "SIN INFORMACION"
+      },
+      {
+        "campo": "gravedad_tradicional",
+        "tipo": "VARCHAR",
+        "nulos": 34482,
+        "distintos_no_nulos": 6,
+        "minimo": "HERIDO",
+        "maximo": "MUERTO"
+      },
+      {
+        "campo": "gravedad_30d",
+        "tipo": "VARCHAR",
+        "nulos": 191330,
+        "distintos_no_nulos": 3,
+        "minimo": "HERIDO",
+        "maximo": "MUERTO"
+      },
+      {
+        "campo": "muerte_posterior",
+        "tipo": "BOOLEAN",
+        "nulos": 512172,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "fecha_cambio_gravedad",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 910177,
+        "distintos_no_nulos": 1626,
+        "minimo": "2015-01-10 00:00:00",
+        "maximo": "2026-03-17 00:00:00"
+      },
+      {
+        "campo": "clinica_atencion",
+        "tipo": "INTEGER",
+        "nulos": 856079,
+        "distintos_no_nulos": 1,
+        "minimo": 0,
+        "maximo": 0
+      },
+      {
+        "campo": "condicion",
+        "tipo": "VARCHAR",
+        "nulos": 25,
+        "distintos_no_nulos": 6,
+        "minimo": "CICLISTA",
+        "maximo": "SIN INFORMACION"
+      },
+      {
+        "campo": "condicion_actv",
+        "tipo": "VARCHAR",
+        "nulos": 856104,
+        "distintos_no_nulos": 6,
+        "minimo": "ACOMPANANTE",
+        "maximo": "PEATON"
+      },
+      {
+        "campo": "condicion_especifica",
+        "tipo": "VARCHAR",
+        "nulos": 56443,
+        "distintos_no_nulos": 19,
+        "minimo": "CICLISTA",
+        "maximo": "SIN INFORMACION"
+      },
+      {
+        "campo": "tipo_sitp",
+        "tipo": "VARCHAR",
+        "nulos": 840022,
+        "distintos_no_nulos": 8,
+        "minimo": "ALIMENTADOR",
+        "maximo": "ZONAL; PROVISIONAL"
+      },
+      {
+        "campo": "victima_categoria",
+        "tipo": "VARCHAR",
+        "nulos": 884493,
+        "distintos_no_nulos": 11,
+        "minimo": "CONDUCTORES DE TAXI",
+        "maximo": "USUARIOS DE BICICLETA"
+      },
+      {
+        "campo": "asociado_categoria",
+        "tipo": "VARCHAR",
+        "nulos": 884493,
+        "distintos_no_nulos": 10,
+        "minimo": "BICICLETAS",
+        "maximo": "VOLCAMIENTO, OBJETO FIJO O CAIDA DE OCUPANTE"
+      },
+      {
+        "campo": "con_cinturon",
+        "tipo": "BOOLEAN",
+        "nulos": 769451,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_casco",
+        "tipo": "BOOLEAN",
+        "nulos": 794015,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_bicicleta",
+        "tipo": "BOOLEAN",
+        "nulos": 764895,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_carga",
+        "tipo": "BOOLEAN",
+        "nulos": 731010,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_embriaguez",
+        "tipo": "BOOLEAN",
+        "nulos": 820133,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_huecos",
+        "tipo": "BOOLEAN",
+        "nulos": 831111,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_menores",
+        "tipo": "BOOLEAN",
+        "nulos": 778714,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_moto",
+        "tipo": "BOOLEAN",
+        "nulos": 549353,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_peaton",
+        "tipo": "BOOLEAN",
+        "nulos": 733808,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_persona_mayor",
+        "tipo": "BOOLEAN",
+        "nulos": 697932,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_rutas",
+        "tipo": "BOOLEAN",
+        "nulos": 836139,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpi",
+        "tipo": "BOOLEAN",
+        "nulos": 681712,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpp",
+        "tipo": "BOOLEAN",
+        "nulos": 721805,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_velocidad",
+        "tipo": "BOOLEAN",
+        "nulos": 830109,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_sitp",
+        "tipo": "BOOLEAN",
+        "nulos": 775926,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_transmilenio",
+        "tipo": "BOOLEAN",
+        "nulos": 912003,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_troncal",
+        "tipo": "BOOLEAN",
+        "nulos": 898466,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_alimentador",
+        "tipo": "BOOLEAN",
+        "nulos": 900480,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_zonal",
+        "tipo": "BOOLEAN",
+        "nulos": 805782,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_provisional",
+        "tipo": "BOOLEAN",
+        "nulos": 902039,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_articulado",
+        "tipo": "BOOLEAN",
+        "nulos": 906523,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_biarticulado",
+        "tipo": "BOOLEAN",
+        "nulos": 907805,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_padron_dual",
+        "tipo": "BOOLEAN",
+        "nulos": 909299,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_servicio_especial",
+        "tipo": "BOOLEAN",
+        "nulos": 888296,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_taxi",
+        "tipo": "BOOLEAN",
+        "nulos": 793716,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      }
+    ],
+    "periodo": [
+      "2015-01-01 00:00:00",
+      "2025-12-31 00:00:00"
+    ]
+  },
+  "vehiculos": {
+    "filas": 779660,
+    "duplicados_exactos_excedentes": 0,
+    "columnas": [
+      {
+        "campo": "source_year",
+        "tipo": "SMALLINT",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": 2019,
+        "maximo": 2025
+      },
+      {
+        "campo": "source_file",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 7,
+        "minimo": "Base_Anuario_de_Siniestralidad_Vial_2019.xlsx",
+        "maximo": "Base_Anuario_de_Siniestralidad_Vial_2025.xlsx"
+      },
+      {
+        "campo": "codigo_siniestro",
+        "tipo": "BIGINT",
+        "nulos": 0,
+        "distintos_no_nulos": 290042,
+        "minimo": 4401419,
+        "maximo": 11342496
+      },
+      {
+        "campo": "codigo_vehiculo",
+        "tipo": "SMALLINT",
+        "nulos": 6,
+        "distintos_no_nulos": 30,
+        "minimo": 1,
+        "maximo": 30
+      },
+      {
+        "campo": "formulario",
+        "tipo": "VARCHAR",
+        "nulos": 98317,
+        "distintos_no_nulos": 290036,
+        "minimo": "A0000041829",
+        "maximo": "AA20668"
+      },
+      {
+        "campo": "fecha",
+        "tipo": "TIMESTAMP_NS",
+        "nulos": 164496,
+        "distintos_no_nulos": 4018,
+        "minimo": "2015-01-01 00:00:00",
+        "maximo": "2025-12-31 00:00:00"
+      },
+      {
+        "campo": "anio",
+        "tipo": "SMALLINT",
+        "nulos": 164496,
+        "distintos_no_nulos": 11,
+        "minimo": 2015,
+        "maximo": 2025
+      },
+      {
+        "campo": "clase_vehiculo_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 682154,
+        "distintos_no_nulos": 20,
+        "minimo": 0,
+        "maximo": 28
+      },
+      {
+        "campo": "clase_vehiculo_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 103839,
+        "distintos_no_nulos": 22,
+        "minimo": "AUTOMOVIL",
+        "maximo": "VOLQUETA"
+      },
+      {
+        "campo": "servicio_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 688291,
+        "distintos_no_nulos": 5,
+        "minimo": 1,
+        "maximo": 7
+      },
+      {
+        "campo": "servicio_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 152619,
+        "distintos_no_nulos": 5,
+        "minimo": "DIPLOMATICO",
+        "maximo": "SIN INFORMACION"
+      },
+      {
+        "campo": "modalidad_codigo",
+        "tipo": "SMALLINT",
+        "nulos": 748414,
+        "distintos_no_nulos": 12,
+        "minimo": 1,
+        "maximo": 12
+      },
+      {
+        "campo": "modalidad_nombre",
+        "tipo": "VARCHAR",
+        "nulos": 644346,
+        "distintos_no_nulos": 12,
+        "minimo": "CARGA - EXTRADIMENSIONADA",
+        "maximo": "PASAJEROS - MASIVO"
+      },
+      {
+        "campo": "en_fuga",
+        "tipo": "BOOLEAN",
+        "nulos": 615164,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "vehiculo_clasificado",
+        "tipo": "VARCHAR",
+        "nulos": 164496,
+        "distintos_no_nulos": 8,
+        "minimo": "BICICLETA",
+        "maximo": "TRANSPORTE DE PASAJEROS"
+      },
+      {
+        "campo": "tipo_sitp",
+        "tipo": "VARCHAR",
+        "nulos": 724002,
+        "distintos_no_nulos": 8,
+        "minimo": "ALIMENTADOR",
+        "maximo": "ZONAL; PROVISIONAL"
+      },
+      {
+        "campo": "con_bicicleta",
+        "tipo": "BOOLEAN",
+        "nulos": 647291,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_carga",
+        "tipo": "BOOLEAN",
+        "nulos": 613481,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_embriaguez",
+        "tipo": "BOOLEAN",
+        "nulos": 698672,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_huecos",
+        "tipo": "BOOLEAN",
+        "nulos": 708842,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_menores",
+        "tipo": "BOOLEAN",
+        "nulos": 681468,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_moto",
+        "tipo": "BOOLEAN",
+        "nulos": 479109,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_peaton",
+        "tipo": "BOOLEAN",
+        "nulos": 664285,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_persona_mayor",
+        "tipo": "BOOLEAN",
+        "nulos": 605564,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_rutas",
+        "tipo": "BOOLEAN",
+        "nulos": 713276,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpi",
+        "tipo": "BOOLEAN",
+        "nulos": 574354,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_tpp",
+        "tipo": "BOOLEAN",
+        "nulos": 621215,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_velocidad",
+        "tipo": "BOOLEAN",
+        "nulos": 708785,
+        "distintos_no_nulos": 2,
+        "minimo": false,
+        "maximo": true
+      },
+      {
+        "campo": "con_sitp",
+        "tipo": "BOOLEAN",
+        "nulos": 668427,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_transmilenio",
+        "tipo": "BOOLEAN",
+        "nulos": 779326,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_troncal",
+        "tipo": "BOOLEAN",
+        "nulos": 771379,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_alimentador",
+        "tipo": "BOOLEAN",
+        "nulos": 770058,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_zonal",
+        "tipo": "BOOLEAN",
+        "nulos": 690490,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_provisional",
+        "tipo": "BOOLEAN",
+        "nulos": 770909,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_articulado",
+        "tipo": "BOOLEAN",
+        "nulos": 776335,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_biarticulado",
+        "tipo": "BOOLEAN",
+        "nulos": 777299,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_padron_dual",
+        "tipo": "BOOLEAN",
+        "nulos": 777161,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_servicio_especial",
+        "tipo": "BOOLEAN",
+        "nulos": 757631,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      },
+      {
+        "campo": "con_taxi",
+        "tipo": "BOOLEAN",
+        "nulos": 672720,
+        "distintos_no_nulos": 1,
+        "minimo": true,
+        "maximo": true
+      }
+    ],
+    "periodo": [
+      "2015-01-01 00:00:00",
+      "2025-12-31 00:00:00"
+    ]
+  },
+  "diccionario": {
+    "filas": 102,
+    "duplicados_exactos_excedentes": 0,
+    "columnas": [
+      {
+        "campo": "SINIESTROS",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 2,
+        "minimo": "SINIESTROS",
+        "maximo": "VEHICULOS"
+      },
+      {
+        "campo": "GRAVEDAD",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 8,
+        "minimo": "CHOQUE",
+        "maximo": "SERVICIO"
+      },
+      {
+        "campo": "1",
+        "tipo": "BIGINT",
+        "nulos": 0,
+        "distintos_no_nulos": 29,
+        "minimo": 0,
+        "maximo": 28
+      },
+      {
+        "campo": "Con Muertos",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 99,
+        "minimo": "Ambulacia",
+        "maximo": "Volqueta"
+      },
+      {
+        "campo": "source_file",
+        "tipo": "VARCHAR",
+        "nulos": 0,
+        "distintos_no_nulos": 1,
+        "minimo": "Base_Anuario_de_Siniestralidad_Vial_2021.xlsx",
+        "maximo": "Base_Anuario_de_Siniestralidad_Vial_2021.xlsx"
+      }
+    ]
+  }
+}

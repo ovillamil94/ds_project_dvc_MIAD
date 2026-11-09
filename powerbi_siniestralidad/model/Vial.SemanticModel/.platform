@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Vial"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d7088c19-644f-4c14-bf1e-2c76c11b8441"
+  }
+}

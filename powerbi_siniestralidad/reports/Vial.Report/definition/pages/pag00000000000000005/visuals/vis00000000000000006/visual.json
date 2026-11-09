@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "vis00000000000000006",
+  "position": {
+    "x": 1029,
+    "y": 84,
+    "width": 231,
+    "height": 78,
+    "z": 600,
+    "tabOrder": 600
+  },
+  "visual": {
+    "visualType": "slicer",
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Clase de vehículo'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "TiposVehiculo"
+                    }
+                  },
+                  "Property": "clase_vehiculo_nombre"
+                }
+              },
+              "queryRef": "TiposVehiculo.clase_vehiculo_nombre",
+              "active": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

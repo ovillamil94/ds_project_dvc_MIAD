@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "vis00000000000000005",
+  "position": {
+    "x": 788,
+    "y": 84,
+    "width": 240,
+    "height": 78,
+    "z": 500,
+    "tabOrder": 500
+  },
+  "visual": {
+    "visualType": "slicer",
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Sexo registrado'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Actores"
+                    }
+                  },
+                  "Property": "sexo"
+                }
+              },
+              "queryRef": "Actores.sexo",
+              "active": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

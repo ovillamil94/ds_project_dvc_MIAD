@@ -1,0 +1,77 @@
+{
+  "clave_fuente_nula": 0,
+  "clave_fuente_repetida": 0,
+  "actores_huerfanos": 0,
+  "vehiculos_huerfanos": 0,
+  "referencias_actor_vehiculo_sin_match": 25494,
+  "siniestros": 290195,
+  "registros_actor": 636205,
+  "registros_vehiculo": 543160,
+  "lesionados": 199551,
+  "fallecidos": 5639,
+  "georreferenciados": 275122,
+  "siniestros_fatales": 5489,
+  "eventos_sin_actor": 151,
+  "eventos_sin_vehiculo": 148,
+  "por_anio": [
+    [
+      2015,
+      31344,
+      27915
+    ],
+    [
+      2016,
+      34992,
+      31969
+    ],
+    [
+      2017,
+      35179,
+      32423
+    ],
+    [
+      2018,
+      37006,
+      33466
+    ],
+    [
+      2019,
+      34999,
+      32970
+    ],
+    [
+      2020,
+      22731,
+      22435
+    ],
+    [
+      2021,
+      28855,
+      28855
+    ],
+    [
+      2022,
+      25453,
+      25453
+    ],
+    [
+      2023,
+      14114,
+      14114
+    ],
+    [
+      2024,
+      13949,
+      13949
+    ],
+    [
+      2025,
+      11573,
+      11573
+    ]
+  ],
+  "claves_evento_repetidas": [
+    126088,
+    126088
+  ]
+}
