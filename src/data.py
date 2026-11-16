@@ -11,6 +11,7 @@ import unicodedata
 
 import numpy as np
 import pandas as pd
+from dateutil.easter import easter
 
 from .config import load_config
 
@@ -30,6 +31,23 @@ def file_md5(path) -> str:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def _siguiente_lunes(ts: pd.Timestamp) -> pd.Timestamp:
+    """Ley Emiliani: el festivo se traslada al lunes siguiente (si ya es lunes, se queda)."""
+    return ts + pd.Timedelta(days=(7 - ts.weekday()) % 7)
+
+
+def festivos_colombia(anios) -> pd.DatetimeIndex:
+    """Festivos nacionales de Colombia (fijos, trasladables al lunes y los de Semana Santa)."""
+    out = []
+    for y in {int(a) for a in anios}:
+        out += [pd.Timestamp(y, m, d) for m, d in [(1, 1), (5, 1), (7, 20), (8, 7), (12, 8), (12, 25)]]
+        out += [_siguiente_lunes(pd.Timestamp(y, m, d)) for m, d in [(1, 6), (3, 19), (6, 29), (8, 15), (10, 12), (11, 1), (11, 11)]]
+        pascua = pd.Timestamp(easter(y))
+        out += [pascua - pd.Timedelta(days=3), pascua - pd.Timedelta(days=2)]  # jueves y viernes santo
+        out += [_siguiente_lunes(pascua + pd.Timedelta(days=o)) for o in (39, 60, 68)]  # Ascensión, Corpus, Sagrado Corazón
+    return pd.DatetimeIndex(sorted(set(out)))
 
 
 RENAME = {"codigo_siniestro": "id_siniestro", "clase_nombre": "clase",
@@ -92,7 +110,28 @@ def build_universe(df: pd.DataFrame, source: str = "30d") -> pd.DataFrame:
     d["franja"] = pd.cut(d["hora"], [-1, 5, 11, 17, 23], labels=["MADRUGADA", "MANANA", "TARDE", "NOCHE"]).astype(str)
     for c in ["latitud", "longitud"]:
         d[c] = pd.to_numeric(d[c], errors="coerce")  # faltantes: los imputa el pipeline
+    d = _add_v2_features(d)
     return d.reset_index(drop=True)
+
+
+def _add_v2_features(d: pd.DataFrame) -> pd.DataFrame:
+    """Variables derivadas de la versión 2. Todas se conocen al recibir la llamada.
+    Solo entran al modelo si config.yml las incluye en un grupo de variables."""
+    h = d["hora"].astype(float)
+    d["hora_sin"] = np.sin(2 * np.pi * h / 24)  # la hora es cíclica: las 23 y las 0 están cerca
+    d["hora_cos"] = np.cos(2 * np.pi * h / 24)
+    fecha = pd.to_datetime(d["fecha"], errors="coerce") if "fecha" in d.columns else pd.Series(pd.NaT, index=d.index)
+    if fecha.notna().any():
+        fest = festivos_colombia(range(int(fecha.dt.year.min()), int(fecha.dt.year.max()) + 1))
+        d["es_festivo"] = fecha.dt.normalize().isin(fest).astype(int)
+    else:
+        d["es_festivo"] = 0
+    d["es_quincena"] = fecha.dt.day.isin([1, 14, 15, 16, 29, 30, 31]).astype(int)  # días de pago
+    d["localidad_franja"] = d["localidad"].astype(str) + "_" + d["franja"].astype(str)
+    ok = d["latitud"].notna() & d["longitud"].notna()
+    celda = d["latitud"].round(2).astype(str) + "_" + d["longitud"].round(2).astype(str)  # ~1 km
+    d["celda_geo"] = np.where(ok, celda, "SIN_COORD")
+    return d
 
 
 def split_temporal(d: pd.DataFrame, cfg: dict | None = None):
