@@ -156,24 +156,31 @@ def features_for(name: str, d: pd.DataFrame, cfg: dict | None = None):
     return cat, num
 
 
+def flag_columns(cfg: dict, d: pd.DataFrame | None = None) -> list[str]:
+    """Banderas con_* usadas por cualquier grupo de variables de config.yml (el consolidado solo las registra cuando son verdaderas)."""
+    cols = []
+    for group in cfg["features"].values():
+        cols += [c for c in group if c.startswith("con_") and c not in cols]
+    return [c for c in cols if d is None or c in d.columns]
+
+
 def prepare(path, source: str = "30d", cfg: dict | None = None):
     cfg = cfg or load_config()
     raw = load_siniestros(path)
     d = build_universe(raw, source)
-    for c in cfg["features"]["posthoc"]:
-        if c in d:
-            d[c] = pd.to_numeric(d[c].astype("float"), errors="coerce")
-            # El consolidado solo registra la bandera cuando es verdadera (blanco = no hay factor).
-            # Si un año no trae NINGÚN dato de la bandera (p. ej. 2025), no existe: se deja NaN en vez de 0.
-            hay = d.groupby("anio")[c].transform(lambda x: x.notna().any())
-            d[c] = d[c].where(~hay, d[c].fillna(0))
+    for c in flag_columns(cfg, d):
+        d[c] = pd.to_numeric(d[c].astype("float"), errors="coerce")
+        # El consolidado solo registra la bandera cuando es verdadera (blanco = no hay factor).
+        # Si un año no trae NINGÚN dato de la bandera (p. ej. 2025), no existe: se deja NaN en vez de 0.
+        hay = d.groupby("anio")[c].transform(lambda x: x.notna().any())
+        d[c] = d[c].where(~hay, d[c].fillna(0))
     return d
 
 
-def posthoc_coverage(d: pd.DataFrame, year: int, cfg: dict | None = None) -> float:
-    """Proporción de banderas post-hoc que existen en un año (1 = todas; 0 = ninguna)."""
+def posthoc_coverage(d: pd.DataFrame, year: int, cfg: dict | None = None, cols: list[str] | None = None) -> float:
+    """Proporción de banderas que existen en un año (1 = todas; 0 = ninguna). `cols` por defecto: grupo 'posthoc'."""
     cfg = cfg or load_config()
-    cols = [c for c in cfg["features"]["posthoc"] if c in d.columns]
+    cols = [c for c in (cols if cols is not None else cfg["features"]["posthoc"]) if c in d.columns]
     sub = d[d["anio"] == year]
     if not cols or not len(sub):
         return 0.0

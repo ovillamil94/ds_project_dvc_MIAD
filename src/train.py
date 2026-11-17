@@ -180,9 +180,10 @@ def run_one(d, spec: dict, data_tag: dict, register: bool = False, cfg: dict | N
             pv, pt = pipe.predict_proba(va[cols])[:, 1], pipe.predict_proba(te[cols])[:, 1]
         thr = threshold_for_recall(va["fatal"], pv, e["recall_target"]) if np.ptp(pv) > 0 else 0.5  # puntaje constante (baseline_prior): nunca alerta
         mlflow.log_param("threshold", round(thr, 5))
-        if "posthoc" in cfg["feature_sets"][fset]:  # si es ~0, las banderas no existen en ese año y el resultado no es comparable
-            mlflow.log_metrics({"cobertura_posthoc_val": posthoc_coverage(d, s["val_year"], cfg),
-                                "cobertura_posthoc_test": posthoc_coverage(d, s["test_year"], cfg)})
+        flags = [c for g in cfg["feature_sets"][fset] for c in cfg["features"][g] if c.startswith("con_")]
+        if flags:  # si es ~0, las banderas no existen en ese año y el resultado no es comparable
+            mlflow.log_metrics({"cobertura_posthoc_val": posthoc_coverage(d, s["val_year"], cfg, flags),
+                                "cobertura_posthoc_test": posthoc_coverage(d, s["test_year"], cfg, flags)})
         mets = {**metrics_at(va["fatal"], pv, thr, "val"), **metrics_at(te["fatal"], pt, thr, "test")}
         nboot = int(e.get("bootstrap", 200))
         for pref, yy, pp in (("val", va["fatal"], pv), ("test", te["fatal"], pt)):
