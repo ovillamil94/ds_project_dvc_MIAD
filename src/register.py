@@ -27,9 +27,13 @@ def main():
     ap.add_argument("--escena-run", default=DEFAULT_ESCENA, help="nombre de la corrida para fatalidad_escena")
     ap.add_argument("--version-label", default=None, help="v1 / v2; por defecto se lee de la etiqueta version_modelo de la corrida "
                                                           "(las corridas v1 entrenadas antes de esta versión no la tienen: use --version-label v1)")
+    ap.add_argument("--solo", choices=["llamada", "escena"], default=None,
+                    help="registrar solo uno de los dos modelos (p. ej. --solo escena para subir una versión nueva solo de fatalidad_escena)")
     ap.add_argument("--no-champion", action="store_true", help="registrar la versión sin moverle el alias champion")
     a = ap.parse_args()
     targets = [(a.llamada_run, "fatalidad_llamada"), (a.escena_run, "fatalidad_escena")]
+    if a.solo:
+        targets = [t for t in targets if t[1] == f"fatalidad_{a.solo}"]
     mlflow.set_tracking_uri(a.tracking_uri)
     client = MlflowClient()
     exp = client.get_experiment_by_name(a.experiment)

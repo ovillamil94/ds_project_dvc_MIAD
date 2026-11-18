@@ -55,3 +55,16 @@ def test_register_creates_versions_with_aliases(tmp_path, monkeypatch):
     c = MlflowClient()
     assert c.get_model_version_by_alias("fatalidad_llamada", "modelo_v1").version in (1, "1")
     assert c.get_model_version_by_alias("fatalidad_llamada", "champion").version in (2, "2")
+
+
+def test_register_solo_escena(tmp_path, monkeypatch):
+    p = tmp_path / "s.parquet"; make().to_parquet(p)
+    uri = f"sqlite:///{tmp_path}/r2.db"
+    mlflow.set_tracking_uri(uri); mlflow.set_experiment("fatalidad_siniestros_bogota")
+    run_one(prepare(p), {"model": "hgb", "features": "evento"}, {"data_md5": "x"})
+    monkeypatch.setattr("sys.argv", ["register", "--tracking-uri", uri, "--escena-run", "hgb__evento", "--solo", "escena"])
+    register.main()
+    c = MlflowClient()
+    assert c.get_registered_model("fatalidad_escena") is not None
+    names = [m.name for m in c.search_registered_models()]
+    assert "fatalidad_llamada" not in names
