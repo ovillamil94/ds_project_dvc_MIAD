@@ -25,7 +25,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import average_precision_score, precision_recall_curve, roc_auc_score
+from sklearn.metrics import average_precision_score, brier_score_loss, precision_recall_curve, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -84,6 +84,37 @@ def metrics_at(y, p, thr, prefix):
     }
 
 
+def bootstrap_pr_auc(y, p, n: int, seed: int):
+    """Intervalo de confianza del 95 % de la PR-AUC por remuestreo. Sirve para saber si una mejora es real o ruido."""
+    y, p = np.asarray(y), np.asarray(p)
+    if n <= 0 or np.ptp(p) == 0:
+        return float("nan"), float("nan")
+    rng = np.random.default_rng(seed)
+    vals = []
+    for _ in range(n):
+        i = rng.integers(0, len(y), len(y))
+        if y[i].sum() > 0:
+            vals.append(average_precision_score(y[i], p[i]))
+    return float(np.percentile(vals, 2.5)), float(np.percentile(vals, 97.5))
+
+
+def log_calibration(y, p, prefix: str):
+    """Curva de calibración (¿la probabilidad dicha es la frecuencia real?). Guarda figura y tabla."""
+    df = pd.DataFrame({"p": np.asarray(p), "y": np.asarray(y)})
+    df["bin"] = pd.qcut(df["p"].rank(method="first"), 10, labels=False)
+    g = df.groupby("bin").agg(prob_media=("p", "mean"), frecuencia_real=("y", "mean"), n=("y", "size"))
+    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    top = max(g.max().iloc[:2].max() * 1.1, 0.05)
+    ax.plot([0, top], [0, top], "--", color="gray", label="calibración perfecta")
+    ax.plot(g["prob_media"], g["frecuencia_real"], "o-", label="modelo")
+    ax.set_xlabel("Probabilidad predicha (media por decil)"); ax.set_ylabel("Frecuencia real de fatales")
+    ax.set_title(f"Calibración {prefix}"); ax.legend(); fig.tight_layout()
+    with tempfile.TemporaryDirectory() as t:
+        fig.savefig(f"{t}/calibration_{prefix}.png", dpi=120); mlflow.log_artifact(f"{t}/calibration_{prefix}.png")
+        g.to_csv(f"{t}/calibration_{prefix}.csv"); mlflow.log_artifact(f"{t}/calibration_{prefix}.csv")
+    plt.close(fig)
+
+
 class PriorBaseline:
     """Línea base 1: la prevalencia de entrenamiento para todos."""
     def __init__(self, y): self.p = float(np.mean(y))
@@ -128,7 +159,8 @@ def run_one(d, spec: dict, data_tag: dict, register: bool = False, cfg: dict | N
     cat, num = features_for(fset, d, cfg)
     cols = cat + num
     with mlflow.start_run(run_name=run_name):
-        mlflow.set_tags({"modelo": model_name, "conjunto_variables": fset, **data_tag})
+        mlflow.set_tags({"modelo": model_name, "conjunto_variables": fset,
+                         "version_modelo": str(e.get("version", "v1")), **data_tag})
         mlflow.log_params({"model": model_name, "feature_set": fset, "n_features": len(cols),
                            "features": ",".join(cols), "train_hasta": s["train_max"], "val": s["val_year"],
                            "test": s["test_year"], "recall_target": e["recall_target"], "seed": e["seed"],
@@ -148,13 +180,20 @@ def run_one(d, spec: dict, data_tag: dict, register: bool = False, cfg: dict | N
             pv, pt = pipe.predict_proba(va[cols])[:, 1], pipe.predict_proba(te[cols])[:, 1]
         thr = threshold_for_recall(va["fatal"], pv, e["recall_target"]) if np.ptp(pv) > 0 else 0.5  # puntaje constante (baseline_prior): nunca alerta
         mlflow.log_param("threshold", round(thr, 5))
-        if "posthoc" in cfg["feature_sets"][fset]:  # si es ~0, las banderas no existen en ese año y el resultado no es comparable
-            mlflow.log_metrics({"cobertura_posthoc_val": posthoc_coverage(d, s["val_year"], cfg),
-                                "cobertura_posthoc_test": posthoc_coverage(d, s["test_year"], cfg)})
+        flags = [c for g in cfg["feature_sets"][fset] for c in cfg["features"][g] if c.startswith("con_")]
+        if flags:  # si es ~0, las banderas no existen en ese año y el resultado no es comparable
+            mlflow.log_metrics({"cobertura_posthoc_val": posthoc_coverage(d, s["val_year"], cfg, flags),
+                                "cobertura_posthoc_test": posthoc_coverage(d, s["test_year"], cfg, flags)})
         mets = {**metrics_at(va["fatal"], pv, thr, "val"), **metrics_at(te["fatal"], pt, thr, "test")}
+        nboot = int(e.get("bootstrap", 200))
+        for pref, yy, pp in (("val", va["fatal"], pv), ("test", te["fatal"], pt)):
+            lo, hi = bootstrap_pr_auc(yy, pp, nboot, e["seed"])
+            mets[f"{pref}_pr_auc_ci_low"], mets[f"{pref}_pr_auc_ci_high"] = lo, hi
+            mets[f"{pref}_brier"] = float(brier_score_loss(yy, pp))
         mlflow.log_metrics({k: v for k, v in mets.items() if not np.isnan(v)})
         if pipe is not None:
             log_importance(pipe, va[cols], va["fatal"], cat, num, e["seed"])
+            log_calibration(va["fatal"], pv, "val")
             sig = infer_signature(va[cols].head(200), pv[:200])
             mlflow.sklearn.log_model(pipe, name="model", signature=sig, serialization_format="cloudpickle",
                                      input_example=va[cols].head(3),

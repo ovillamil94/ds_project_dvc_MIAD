@@ -1,0 +1,4 @@
+# Dependencias de la API. Las del modelo (scikit-learn, pandas, numpy, cloudpickle, mlflow)
+# vienen de model/requirements.txt, que MLflow genera al exportar el modelo.
+fastapi>=0.110
+uvicorn[standard]>=0.29
