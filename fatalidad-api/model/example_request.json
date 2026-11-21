@@ -1,0 +1,32 @@
+{
+  "records": [
+    {
+      "localidad": "LOS MARTIRES",
+      "dia_semana": "DOMINGO",
+      "franja": "MADRUGADA",
+      "clase": "CHOQUE",
+      "elemento_choque": "VEHICULO",
+      "objeto_fijo": "DESCONOCIDO",
+      "hora": 0,
+      "mes": 1,
+      "latitud": 4.61070475351,
+      "longitud": -74.07533047383,
+      "es_fin_semana": 1,
+      "es_madrugada": 1
+    },
+    {
+      "localidad": "RAFAEL URIBE URIBE",
+      "dia_semana": "JUEVES",
+      "franja": "MANANA",
+      "clase": "CHOQUE",
+      "elemento_choque": "VEHICULO",
+      "objeto_fijo": "DESCONOCIDO",
+      "hora": 8,
+      "mes": 1,
+      "latitud": 4.575718093,
+      "longitud": -74.10265145485,
+      "es_fin_semana": 0,
+      "es_madrugada": 0
+    }
+  ]
+}
