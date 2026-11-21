@@ -1,7 +1,4 @@
-# Este archivo lo SOBRESCRIBE src/export_model.py con las versiones exactas del entrenamiento.
-fastapi
-uvicorn
-numpy
-pandas
-scikit-learn
-joblib
+# Dependencias de la API. Las del modelo (scikit-learn, pandas, numpy, cloudpickle, mlflow)
+# vienen de model/requirements.txt, que MLflow genera al exportar el modelo.
+fastapi>=0.110
+uvicorn[standard]>=0.29
