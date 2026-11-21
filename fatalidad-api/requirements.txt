@@ -1,0 +1,7 @@
+# Este archivo lo SOBRESCRIBE src/export_model.py con las versiones exactas del entrenamiento.
+fastapi
+uvicorn
+numpy
+pandas
+scikit-learn
+joblib
