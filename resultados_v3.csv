@@ -1,0 +1,4 @@
+run,val_pr_auc,val_roc_auc,val_recall,val_precision,val_alert_rate,val_recall_top10,val_recall_top20,val_prevalence,test_pr_auc,test_roc_auc,test_recall,test_precision,test_alert_rate,test_recall_top10,test_recall_top20,test_prevalence,val_pr_auc_ci_low,val_pr_auc_ci_high,val_brier,test_pr_auc_ci_low,test_pr_auc_ci_high,test_brier
+hgb__llamada_carga,0.0963,0.683,0.8004,0.0545,0.6269,0.3067,0.4682,0.0427,0.1175,0.6769,0.8149,0.0619,0.627,0.2831,0.4319,0.0476,0.0854,0.1128,0.0399,0.1029,0.1386,0.044
+hgb__evento_carga,0.1604,0.7677,0.8004,0.0789,0.433,0.3938,0.5626,0.0427,0.1696,0.7633,0.8167,0.0901,0.4317,0.3448,0.5517,0.0476,0.1368,0.192,0.0384,0.148,0.1979,0.0426
+logreg__evento_carga,0.1464,0.7641,0.8004,0.0804,0.4247,0.3612,0.559,0.0427,0.1595,0.7649,0.8113,0.092,0.42,0.3412,0.559,0.0476,0.1268,0.1748,0.1955,0.1409,0.1855,0.1926
