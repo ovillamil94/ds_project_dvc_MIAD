@@ -1,0 +1,26 @@
+{
+  "model_name": "fatalidad_llamada",
+  "alias": "champion",
+  "model_version": 1,
+  "run_name": "hgb__evento",
+  "version_modelo": "v1",
+  "feature_set": "evento",
+  "features": [
+    "localidad",
+    "dia_semana",
+    "franja",
+    "clase",
+    "elemento_choque",
+    "objeto_fijo",
+    "hora",
+    "mes",
+    "latitud",
+    "longitud",
+    "es_fin_semana",
+    "es_madrugada"
+  ],
+  "threshold": 0.02573,
+  "recall_target": 0.8,
+  "val_pr_auc": 0.11446478791444699,
+  "test_pr_auc": 0.12942630568015215
+}
